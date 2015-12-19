@@ -1,4 +1,4 @@
-package com.smarthome;
+package com.smarthome.android;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,7 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class Connexion extends AppCompatActivity
+import com.smarthome.R;
+
+public class Acceuil extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -22,6 +24,7 @@ public class Connexion extends AppCompatActivity
         setContentView(R.layout.activity_connexion);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
