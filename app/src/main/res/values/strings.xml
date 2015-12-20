@@ -19,4 +19,27 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_test_acceuil">testAcceuil</string>
+    <string name="devices">Devices</string>
+    <string name="home">Home</string>
+    <string name="houses">Houses</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="routeur">Routeur</string>
+    <string name="profil">Profil</string>
+    <string name="preference">preferences</string>
+
+
+
+    <string name="deconnexion">Deconnexion</string>
+    <string name="help">Help</string>
+    <string name="price">Price kw/h</string>
+    <string name="delete">Delete</string>
+
+
+
+
+
+
+
+
 </resources>
