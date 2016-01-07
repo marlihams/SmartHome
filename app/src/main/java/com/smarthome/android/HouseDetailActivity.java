@@ -33,7 +33,7 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
 
 
 
-    private static Context lContext;
+
     private HouseDetailView houseDetailView;
     private HouseDetailControllerI houseDetailController;
     private HouseDetailModelI houseDetailModel;
@@ -56,7 +56,7 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house_detail);
         super.initialize();
-        lContext=this;
+
         // creation controller view model
 
         Intent intent=getIntent();
@@ -89,8 +89,10 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
         houseDetailView=(HouseDetailView)houseDetailController.getView();
     }
 
-    public static Context getlContext() {
-        return lContext;
+
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(this,HousesActivity.class));
     }
 
 }

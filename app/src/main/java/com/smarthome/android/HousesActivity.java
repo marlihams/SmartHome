@@ -2,6 +2,7 @@ package com.smarthome.android;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageButton;
@@ -55,6 +56,10 @@ public class HousesActivity extends  SmartMenuActivity implements SmartHomeView 
         HousesModelI housesModel=new HousesModel();
         HousesController housesController=new HousesController(housesModel);
         housesView= (HousesView)((HousesController)housesController).getView();
+    }
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(this,AcceuilActivity.class));
     }
 
 

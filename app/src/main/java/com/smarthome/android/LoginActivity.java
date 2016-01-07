@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.content.Intent;
 
 import com.smarthome.R;
 import com.smarthome.controller.UserController;
@@ -22,7 +23,7 @@ public class LoginActivity extends Activity implements SmartHomeView {
 
     private LoginView loginview;
     private static Context lContext;
-
+    public static final int   RESULT_CLOSE_ALL=100;
 
     // attribute from layout
     AutoCompleteTextView emailView;
@@ -63,5 +64,15 @@ public class LoginActivity extends Activity implements SmartHomeView {
         return lContext;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(resultCode)
+        {
+            case RESULT_CLOSE_ALL:
+                setResult(RESULT_CLOSE_ALL);
+                finish();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
 
