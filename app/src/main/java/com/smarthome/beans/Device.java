@@ -1,21 +1,22 @@
 package com.smarthome.beans;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 
 /**
  * Created by Mdiallo on 21/12/2015.
  */
-public class Device implements Bean{
-
+public class Device extends BeanAbstract{
+    @Expose
     @DatabaseField(generatedId = true, columnName = "device_id")
     private int id;
-
+    @Expose
     @DatabaseField(columnName = "device_name")
     private  String name;
-
+    @Expose
     @DatabaseField(columnName = "device_piece")
     private String pieceName;
-
+    @Expose
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private House house;
 
@@ -73,4 +74,6 @@ public class Device implements Bean{
     public Bean getForeignKey(String foreignKey) {
         return house;
     }
+
+
 }

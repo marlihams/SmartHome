@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by Mdiallo on 20/12/2015.
  */
-public class House implements Bean{
+public class House extends BeanAbstract{
 
     @Expose
     @DatabaseField(generatedId = true, columnName = "house_id")

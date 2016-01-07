@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by Mdiallo on 19/12/2015.
  */
-public class User  implements Bean{
+public class User  extends BeanAbstract{
 
     private static final long serialVersionUID = -222864131214757024L;
     @Expose

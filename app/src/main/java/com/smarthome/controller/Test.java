@@ -62,6 +62,13 @@ public class Test {
         Device device4=new Device(house1,"ampoule4", "piece 2");
         Device device5=new Device(house1,"ampoule4", "piece 2");
 
+        Device device7=new Device(house2,"ampoule 2","piece 2");
+        Device device8=new Device(house2,"ampoule 3","piece 1");
+        Device device9=new Device(house2,"ampoule 4","piece 2");
+        Device device10=new Device(house2,"ampoule4", "piece 2");
+        Device device11=new Device(house2,"ampoule4", "piece 2");
+        Device device12=new Device(house2,"ampoule 1","piece 1");
+
         //  add bean user
         userDao.createOrUpdate(user1);
         userDao.createOrUpdate(user2);
@@ -81,6 +88,15 @@ public class Test {
         deviceDao.createOrUpdate(device2);
         deviceDao.createOrUpdate(device3);
         deviceDao.createOrUpdate(device4);
+        deviceDao.createOrUpdate(device5);
+        deviceDao.createOrUpdate(device6);
+        deviceDao.createOrUpdate(device7);
+        deviceDao.createOrUpdate(device8);
+        deviceDao.createOrUpdate(device9);
+        deviceDao.createOrUpdate(device10);
+        deviceDao.createOrUpdate(device11);
+        deviceDao.createOrUpdate(device12);
+
 
         //ConsoDevice(String consomation, Device device) {
         ConsoDevice consoDevice1=new ConsoDevice("54",device1);
@@ -133,6 +149,21 @@ public class Test {
         ConsoHouse consoHouse13=new ConsoHouse("100",house3);
         ConsoHouse consoHouse14=new ConsoHouse("250",house3);
 
+        consoHouseDao.createOrUpdate(consoHouse1);
+        consoHouseDao.createOrUpdate(consoHouse2);
+        consoHouseDao.createOrUpdate(consoHouse3);
+        consoHouseDao.createOrUpdate(consoHouse4);
+        consoHouseDao.createOrUpdate(consoHouse5);
+        consoHouseDao.createOrUpdate(consoHouse6);
+        consoHouseDao.createOrUpdate(consoHouse7);
+        consoHouseDao.createOrUpdate(consoHouse8);
+        consoHouseDao.createOrUpdate(consoHouse9);
+        consoHouseDao.createOrUpdate(consoHouse10);
+        consoHouseDao.createOrUpdate(consoHouse11);
+        consoHouseDao.createOrUpdate(consoHouse12);
+        consoHouseDao.createOrUpdate(consoHouse13);
+        consoHouseDao.createOrUpdate(consoHouse14);
+
 
 // Historique(String dateDebut, String dateFin, ConsoDevice deviceConso, ConsoHouse houseConso) {
 
@@ -168,6 +199,7 @@ public class Test {
         historiqueDao.createOrUpdate(historique12);
 
 
+        String  a="slt";
 
 
 

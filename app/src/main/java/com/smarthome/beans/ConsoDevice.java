@@ -1,5 +1,6 @@
 package com.smarthome.beans;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 
 import java.util.Date;
@@ -7,14 +8,15 @@ import java.util.Date;
 /**
  * Created by Mdiallo on 21/12/2015.
  */
-public class  ConsoDevice implements Bean {
+public class  ConsoDevice extends BeanAbstract {
 
-
+    @Expose
     @DatabaseField(generatedId = true, columnName = "consoDevice_id")
     private int id;
-
+    @Expose
     @DatabaseField(columnName = "consoDevice_consommation")
     private  String consomation;
+    @Expose
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private  Device device;
 

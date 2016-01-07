@@ -1,5 +1,6 @@
 package com.smarthome.beans;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 
 import java.util.Date;
@@ -7,21 +8,21 @@ import java.util.Date;
 /**
  * Created by Mdiallo on 21/12/2015.
  */
-public class Historique implements Bean {
+public class Historique extends BeanAbstract {
 
-
+    @Expose
     @DatabaseField(generatedId = true, columnName = "historique_id")
     private int id;
-
+    @Expose
     @DatabaseField(columnName = "historique_dateDebut")
     private String dateDebut;
-
+    @Expose
     @DatabaseField(columnName = "historique_dateFin")
     private String dateFin;
-
+    @Expose
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private ConsoDevice deviceConso;
-
+    @Expose
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private ConsoHouse houseConso;
 

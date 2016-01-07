@@ -75,8 +75,7 @@ public class UserController implements UserControllerI {
 
             loginView.displayAcceuilView(house.getUser());
         }
-        else
-            loginView.displayError();
+
     }
 
     @Override

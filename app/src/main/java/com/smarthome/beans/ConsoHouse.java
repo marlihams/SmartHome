@@ -1,19 +1,20 @@
 package com.smarthome.beans;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 
 /**
  * Created by Mdiallo on 21/12/2015.
  */
-public class ConsoHouse implements Bean {
+public class ConsoHouse extends BeanAbstract {
 
-
+    @Expose
     @DatabaseField(generatedId = true, columnName = "consoHouse_id")
     private int id;
-
+    @Expose
     @DatabaseField(columnName = "consoHouse_consommation")
     private  String consomation;
-
+    @Expose
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private  House house;
 
