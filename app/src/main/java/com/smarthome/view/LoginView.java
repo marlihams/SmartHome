@@ -1,5 +1,7 @@
 package com.smarthome.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -130,7 +132,7 @@ public class LoginView  implements SmartView,SpinnerObserver {
                     String password = passwordView.getText().toString();
                     if ((!email.isEmpty() && !password.isEmpty()) && UserModel.isEmailValid(email) && houses.isEmpty()) {
                         User user = new User(email, password);
-                          userController.updateHouse(user);
+                        userController.updateHouse(user);
 
                     } else {
                         //ERROR
@@ -144,15 +146,10 @@ public class LoginView  implements SmartView,SpinnerObserver {
     }
 
     public void displayAcceuilView(User user){
-
-        SmartChangeView.changeView(LoginActivity.getlContext(),"acceuil");
+        Intent intent=new Intent(LoginActivity.getlContext(),AcceuilActivity.class);
+      ((Activity)   LoginActivity.getlContext()).startActivityForResult(intent, 100);
     }
 
-    public void displayError() {
-
-        //TODO gestion des erreurs ;
-
-    }
 
     public UserModelI getUsermodel() {
         return userModel;
