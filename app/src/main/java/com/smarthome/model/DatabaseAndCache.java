@@ -95,7 +95,7 @@ public class DatabaseAndCache {
 
         for (int i=0,len=consoHouses.size();i<len;i++){
             historique.setHouseConso(consoHouses.get(i));
-            historiques.addAll(historiqueDao.findAllByForeignKey(historique, "consoHouse_id"));
+            historiques.addAll(historiqueDao.findAllByForeignKey(historique, "houseConso_id"));
         }
         return historiques;
 
@@ -135,7 +135,7 @@ public class DatabaseAndCache {
         List<Device>devices=new ArrayList<Device>();
         Device device=new Device();
 
-        for (int i=0,len=devices.size();i<len;i++){
+        for (int i=0,len=houses.size();i<len;i++){
             device.setHouse(houses.get(i));
             devices.addAll(deviceDao.findAllByForeignKey(device, "house_id"));
         }
