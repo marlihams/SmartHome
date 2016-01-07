@@ -1,0 +1,184 @@
+#################################
+ #--User--
+#################################
+
+# --table-start--
+dataClass=com.smarthome.beans.User
+tableName=user
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=user_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+columnName=user_name
+# --field-end--
+# --field-start--
+fieldName=forname
+columnName=user_forname
+# --field-end--
+# --field-start--
+fieldName=address
+columnName=user_address
+# --field-end--
+# --table-fields-end--
+fieldName=password
+columnName=user_password
+# --field-end--
+# --table-fields-end--
+fieldName=email
+columnName=user_email
+# --field-end--
+# --table-fields-end--
+fieldName=phone
+columnName=user_phone
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+ #--House--
+#################################
+
+dataClass=com.smarthome.beans.House
+tableName=house
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+columnName=house_name
+# --field-end--
+# --field-start--
+fieldName=address
+columnName=house_address
+# --field-end--
+# --field-start--
+
+fieldName=user
+columnName=user
+foreign=true
+
+# --field-end--
+# --table-fields-end--
+# --table-end--
+
+#################################
+ #--Device--
+#################################
+
+dataClass=com.smarthome.beans.Device
+tableName=device
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=device_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+columnName=device_name
+# --field-end--
+# --field-start--
+fieldName=pieceName
+columnName=device_piece
+# --field-end--
+# --field-start--
+
+fieldName=house
+columnName=house
+foreign=true
+
+# --field-end--
+# --table-fields-end--
+# --table-end--
+
+#################################
+ #--ConsoDevice--
+#################################
+dataClass=com.smarthome.beans.ConsoDevice
+tableName=consoDevice
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=consoDevice_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=consomation
+columnName=consoDevice_consommation
+# --field-end--
+# --field-start--
+
+fieldName=device
+columnName=device
+foreign=true
+
+# --field-end--
+# --table-fields-end--
+# --table-end--
+
+#################################
+ #--ConsoHouse--
+#################################
+dataClass=com.smarthome.beans.ConsoHouse
+tableName=consoDevice
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=consoHouse_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=consomation
+columnName=consoHouse_consommation
+# --field-end--
+# --field-start--
+
+fieldName=house
+columnName=house
+foreign=true
+
+# --field-end--
+# --table-fields-end--
+# --table-end--
+
+#################################
+ #--Historique--
+#################################
+dataClass=com.smarthome.beans.ConsoHouse
+tableName=consoDevice
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=historique_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=dateDebut
+columnName=historique_dateDebut
+
+# --field-end--
+# --field-start--
+fieldName=dateFin
+columnName=historique_dateFin
+
+# --field-end--
+# --field-start--
+fieldName=deviceConso
+columnName=deviceConso
+foreign=true
+
+# --field-end--
+# --field-start--
+fieldName=houseConso
+columnName=houseConso
+foreign=true
+
+# --field-end--
+# --table-fields-end--
+# --table-end--

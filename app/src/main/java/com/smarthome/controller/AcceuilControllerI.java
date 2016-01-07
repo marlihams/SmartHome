@@ -6,4 +6,5 @@ package com.smarthome.controller;
 public interface AcceuilControllerI {
 
 
+
 }
