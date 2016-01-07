@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:text="New House"
+        android:textSize="@dimen/menu_text_size"
+        android:textColor="@color/colorPrimary"
+
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+    <View
+        android:layout_width="50dp"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_alignLeft="@+id/title"
+        android:layout_alignStart="@+id/title"
+        android:layout_below="@+id/title"
+        android:layout_alignRight="@+id/title"
+        android:layout_alignEnd="@+id/title" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/homeName"
+        android:hint="Name"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="49dp"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/home_address"
+        android:layout_alignStart="@+id/home_address" />
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/home_address"
+        android:hint="adress"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@+id/homeName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp" />
+   <Button
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Validate"
+       android:id="@+id/validate"
+       android:background="@color/colorPrimary"
+       android:layout_alignTop="@+id/cancel"
+       android:layout_alignRight="@+id/home_address"
+       android:layout_alignEnd="@+id/home_address"
+       android:layout_marginRight="20dp"
+       android:layout_marginEnd="20dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="cancel"
+        android:background="@color/dark_gray"
+        android:layout_below="@+id/home_address"
+        android:layout_alignLeft="@+id/home_address"
+        android:layout_alignStart="@+id/home_address"
+        android:layout_marginLeft="23dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="42dp"
+        android:id="@+id/cancel" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/cancel"
+        android:layout_marginTop="5dp"
+        />
+
+</RelativeLayout>

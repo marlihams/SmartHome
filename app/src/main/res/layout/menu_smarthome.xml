@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/menu_dimension"
+    android:background="@drawable/side_nav_bar"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:id="@+id/menuActivity"
+    android:layout_marginTop="@dimen/menu_margin"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/titleActivity"
+        android:text="Menu title"
+        android:textSize="@dimen/menu_text_size"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/white"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+
+
+        />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add"
+        android:background="@drawable/content_new_white"
+
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center_vertical"
+        />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/refresh"
+        android:background="@drawable/refresh"
+
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center_vertical"
+        />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/delete"
+        android:background="@drawable/delete_white"
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center_vertical"
+        />
+</LinearLayout>

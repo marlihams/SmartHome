@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/menu_dimension"
+    android:background="@drawable/side_nav_bar"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:id="@+id/menuActivity"
+    android:layout_marginTop="@dimen/menu_margin"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profile"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        android:id="@+id/title"
+        android:layout_gravity="center_vertical"
+       android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="210dp"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:background="@drawable/check"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/submit" />
+
+</LinearLayout>
