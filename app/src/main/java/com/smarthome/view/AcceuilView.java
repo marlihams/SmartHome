@@ -8,6 +8,9 @@ import android.widget.ImageButton;
 
 import com.smarthome.R;
 import com.smarthome.android.AcceuilActivity;
+import com.smarthome.android.HousesActivity;
+import com.smarthome.android.LoginActivity;
+import com.smarthome.android.SmartAnimation;
 import com.smarthome.android.UserActivity;
 import com.smarthome.controller.AcceuilController;
 import com.smarthome.controller.AcceuilControllerI;
@@ -36,16 +39,18 @@ public class  AcceuilView implements SmartView {
 
     @Override
     public void setListener() {
-
+        SmartAnimation.init(AcceuilActivity.getlContext());
         profil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SmartChangeView.changeView(AcceuilActivity.getlContext(),"profil");
+                v.startAnimation(SmartAnimation.wave_scale);
+                //  SmartChangeView.changeView(AcceuilActivity.getlContext(),"profil");
             }
         });
         devices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(SmartAnimation.wave_scale);
             //    SmartChangeView.changeView(DevicesActivity.getlContext(),"devices");
 
             }
@@ -53,10 +58,16 @@ public class  AcceuilView implements SmartView {
         homes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-         //       SmartChangeView.changeView(HomesActivity.getlContext(),"homes");
+                v.startAnimation(SmartAnimation.wave_scale);
+                SmartChangeView.changeView(AcceuilActivity.getlContext(),"houses");
 
             }
         });
+
+    }
+
+    @Override
+    public void subscribeObserver() {
 
     }
 }

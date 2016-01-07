@@ -1,6 +1,7 @@
 package com.smarthome.android;
 
 
+        import android.content.Context;
         import android.os.Bundle;
         import android.support.design.widget.NavigationView;
         import android.support.v4.view.GravityCompat;
@@ -16,27 +17,34 @@ package com.smarthome.android;
         import com.smarthome.controller.AcceuilController;
         import com.smarthome.controller.AcceuilControllerI;
         import com.smarthome.view.AcceuilView;
+        import com.smarthome.view.SmartChangeView;
         import com.smarthome.view.SmartHomeView;
 /**
  * Created by Mdiallo on 20/12/2015.
  */
 public abstract class SmartMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
-
+    protected static Context lContext;
         Toolbar toolbar;
         DrawerLayout drawer;
         NavigationView navigationView;
         ActionBarDrawerToggle toggle;
 
-// view property
+
+    // view property
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
             super.onCreate(savedInstanceState);
+        lContext=this;
 
     }
 
-    void initialize(){
+    public static Context getlContext() {
+        return lContext;
+    }
+
+   protected void initialize(){
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,12 +56,43 @@ public abstract class SmartMenuActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView=(NavigationView)findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                int id=item.getItemId();
+                switch (id){
+                    case R.id.home:
+                        SmartChangeView.changeView(lContext,"acceuil");
+                        break;
+                    case R.id.devices:
+                        SmartChangeView.changeView(lContext,"devices");
+                        break;
+                    case R.id.profil:
+                        SmartChangeView.changeView(lContext,"profiles");
+                        break;
+                    case R.id.houses:
+                        SmartChangeView.changeView(lContext,"houses");
+                        break;
+                    case R.id.bluetooth:
+                        SmartChangeView.setBluetooth(true);
+                        break;
+                    case R.id.routeur: //TODO open the screen config for Routeur
+                        SmartChangeView.setBluetooth(false);
+                        break;
+                    default:
+                        break;
+
+                }
+
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
     }
 
     @Override
     public void onBackPressed(){
-            DrawerLayout drawer=(DrawerLayout)findViewById(R.id.drawer_layout);
+
             if(drawer.isDrawerOpen(GravityCompat.START)){
             drawer.closeDrawer(GravityCompat.START);
             }else{
@@ -64,7 +103,7 @@ public abstract class SmartMenuActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
             // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.connexion,menu);
+        //    getMenuInflater().inflate(R.menu.activity_connexion_drawer,menu);
             return true;
             }
 
@@ -74,6 +113,7 @@ public abstract class SmartMenuActivity extends AppCompatActivity
             // automatically handle clicks on the Home/Up button, so long
             // as you specify a parent activity in AndroidManifest.xml.
             int id=item.getItemId();
+
 
             //noinspection SimplifiableIfStatement
             if(id==R.id.action_settings){
@@ -89,19 +129,7 @@ public abstract class SmartMenuActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

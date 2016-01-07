@@ -21,7 +21,7 @@ import com.smarthome.view.SmartHomeView;
 public class AcceuilActivity extends SmartMenuActivity implements SmartHomeView {
 
     private AcceuilView acceuilView;
-    private static Context lContext;
+
         private ImageButton profil;
         private ImageButton homes;
         private ImageButton devices;
@@ -41,7 +41,7 @@ public class AcceuilActivity extends SmartMenuActivity implements SmartHomeView 
          super.onCreate(savedInstanceState);
          setContentView(R.layout.activity_connexion);
          super.initialize();
-        lContext=this;
+
 
          profil=(ImageButton)findViewById(R.id.profil_acceuil);
          homes=(ImageButton)findViewById(R.id.home_acceuil);
@@ -53,7 +53,5 @@ public class AcceuilActivity extends SmartMenuActivity implements SmartHomeView 
 
     }
 
-    public static Context getlContext() {
-        return lContext;
-    }
+
 }

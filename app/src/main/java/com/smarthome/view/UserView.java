@@ -16,7 +16,11 @@ public class UserView implements UserObsever,SmartView {
     public UserView(UserModelI userModel, UserControllerI userController) {
         this.userModel = userModel;
         this.userController = userController;
-        this.userModel.subscribeObserver((UserObsever)this);
+        subscribeObserver();
+    }
+
+    public void subscribeObserver(){
+        this.userModel.subscribeUserObserver((UserObsever)this);
     }
 
     @Override

@@ -5,8 +5,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import com.smarthome.R;
 import com.smarthome.controller.UserController;
@@ -26,8 +28,9 @@ public class LoginActivity extends Activity implements SmartHomeView {
     AutoCompleteTextView emailView;
     private EditText passwordView;
     private View mProgressView;
-    private ImageButton connexionView;
+    private Button connexionView;
     private ImageButton  newAccountView;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +44,17 @@ public class LoginActivity extends Activity implements SmartHomeView {
         emailView = (AutoCompleteTextView) findViewById(R.id.email);
         passwordView = (EditText) findViewById(R.id.password);
         mProgressView=(View) findViewById(R.id.login_progress);
-        connexionView=(ImageButton)findViewById(R.id.connexion);
+        connexionView=(Button)findViewById(R.id.connexion);
         newAccountView=(ImageButton)findViewById(R.id.newacount);
-
-        loginview.initializeWidget(emailView,passwordView,mProgressView,connexionView,newAccountView);
+        spinner=(Spinner)findViewById(R.id.house);
+        loginview.initializeWidget(emailView,passwordView,mProgressView,connexionView,newAccountView,spinner);
         loginview.setListener();
 
     }
     @Override
     public void initializeMvc() {
 
-        UserModelI userModel= new UserModel();
+        UserModelI userModel= new UserModel(true);
         UserControllerI userController=new UserController(userModel);
         loginview=((UserController)userController).getLoginView();
 
