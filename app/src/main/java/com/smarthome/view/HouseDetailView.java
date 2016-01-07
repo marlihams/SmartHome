@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.smarthome.android.HouseDetailActivity;
 import com.smarthome.android.HousesActivity;
+import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Historique;
 import com.smarthome.beans.House;
 import com.smarthome.controller.HouseDetailControllerI;
@@ -75,27 +76,33 @@ public class HouseDetailView implements SmartView,HouseObserver {
 
     @Override
     public void setListener() {
-
+        SmartAnimation.init(HousesActivity.getlContext());
     submit.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            v.startAnimation(SmartAnimation.fad_in);
             House house = houseDetailController.getHouseDetailModel().getHouse();
             String name = houseName.getText().toString();
             String address = houseAddress.getText().toString();
             if (name.equals(house.getName()) && address.equals(house.getAddress())) {
-                Toast.makeText(HouseDetailActivity.getlContext(), "nothing to update", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HouseDetailActivity.getlContext(), "nothing to submit", Toast.LENGTH_SHORT).show();
             } else {
                 houseDetailController.getHouseDetailModel().updateHouse(name, address);
             }
         }
     });
-        historiqueDate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        historiqueDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 consoPeriode.setText(addSymbole(consommation.get(position)));
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //do Nothing
             }
         });
     }
+
 
 
     private  void displayWidgetContent(){
@@ -104,9 +111,13 @@ public class HouseDetailView implements SmartView,HouseObserver {
 
         nbBroke.setText(houseDetail.get("broke")+"");
         nbTurnOff.setText(houseDetail.get("turnoff")+"");
-        nbTurnOn.setText(houseDetail.get("turnon")+"");
+        nbTurnOn.setText(houseDetail.get("turnon") + "");
         updateSpinner(); // fill spinner and select the first element
         consoPeriode.setText(addSymbole(consommation.get(0)));
+        House house=houseDetailController.getHouseDetailModel().getHouse();
+        houseAddress.setText(house.getAddress());
+        houseName.setText(house.getName());
+
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 
 import com.smarthome.R;
 import com.smarthome.android.AcceuilActivity;
+import com.smarthome.android.DevicesActivity;
 import com.smarthome.android.HousesActivity;
 import com.smarthome.android.LoginActivity;
 import com.smarthome.android.SmartAnimation;
@@ -44,14 +45,14 @@ public class  AcceuilView implements SmartView {
             @Override
             public void onClick(View v) {
                 v.startAnimation(SmartAnimation.wave_scale);
-                //  SmartChangeView.changeView(AcceuilActivity.getlContext(),"profil");
+                  SmartChangeView.changeView(AcceuilActivity.getlContext(), "profil");
             }
         });
         devices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.startAnimation(SmartAnimation.wave_scale);
-            //    SmartChangeView.changeView(DevicesActivity.getlContext(),"devices");
+                SmartChangeView.changeView(AcceuilActivity.getlContext(), "devices");
 
             }
         });
