@@ -51,6 +51,7 @@
         android:layout_alignLeft="@+id/email"
         android:hint="@string/prompt_password"
         android:maxLines="1"
+
         android:singleLine="true"
        />
 
@@ -64,6 +65,7 @@
         android:orientation="horizontal"
         android:id="@+id/layout_house"
         android:layout_below="@+id/password"
+        android:layout_marginTop="10dp"
         android:layout_alignLeft="@+id/remember"
         android:layout_alignStart="@+id/remember">
 
