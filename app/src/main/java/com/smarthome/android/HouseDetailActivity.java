@@ -17,8 +17,6 @@ import com.smarthome.view.HouseDetailView;
 import com.smarthome.view.HousesView;
 import com.smarthome.view.SmartHomeView;
 
-import org.achartengine.GraphicalView;
-
 public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeView {
 
 
@@ -39,8 +37,9 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
     private int houseId;
     private ImageButton submit;
     private TextView title;
-    private GraphicalView monthlyConsumption;
-    private LinearLayout chart;
+    private LinearLayout monthlyConsumptionChart;
+    private LinearLayout lastMonthComparisonChart;
+    private TextView comparisonChartTitle;
 
 
     @Override
@@ -64,11 +63,13 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
         historiqueDate=(Spinner)findViewById(R.id.conso_date);
         consoPeriode=(TextView)findViewById(R.id.consommation);
         submit=(ImageButton)findViewById(R.id.submit);
-        chart=(LinearLayout)findViewById(R.id.chart);
+        monthlyConsumptionChart =(LinearLayout)findViewById(R.id.monthlyConsumptionChart);
+        lastMonthComparisonChart =(LinearLayout)findViewById(R.id.lastMonthComparisonChart);
+        comparisonChartTitle = (TextView) findViewById(R.id.comparisonChartTitle);
         //getting object from their Ids
 
         initializeMvc();
-        houseDetailView.initializeWidget(houseName, houseAddress, nbDevice, nbBroke, nbTurnOff, nbTurnOn, historiqueDate, consoPeriode, submit,chart);
+        houseDetailView.initializeWidget(houseName, houseAddress, nbDevice, nbBroke, nbTurnOff, nbTurnOn, historiqueDate, consoPeriode, submit, monthlyConsumptionChart, lastMonthComparisonChart, comparisonChartTitle);
 
         houseDetailView.setListener();
 

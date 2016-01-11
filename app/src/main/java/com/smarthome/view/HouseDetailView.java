@@ -42,6 +42,7 @@ import java.util.Map;
 
 public class HouseDetailView implements SmartView,HouseObserver {
 
+    private static int NB_MONTHS_TO_DISPLAY = 6;
     public static String SELECTEDHOUSE="selectedHouse";
     private ListView listeHouses;
     private HouseDetailControllerI houseDetailController;
@@ -56,7 +57,9 @@ public class HouseDetailView implements SmartView,HouseObserver {
     private Spinner historiqueDate;
     private TextView  consoPeriode;
     private ImageButton submit;
-    private LinearLayout chart;
+    private LinearLayout monthlyConsumption;
+    private LinearLayout lasMonthComparisonChart;
+    private TextView comparisonChartTitle;
 
     public HouseDetailView(HouseDetailControllerI houseDetailController,HouseDetailModelI houseDetailModel) {
         this.houseDetailController = houseDetailController;
@@ -77,7 +80,9 @@ public class HouseDetailView implements SmartView,HouseObserver {
         historiqueDate=(Spinner)views[6];
         consoPeriode=(TextView)views[7];
         submit=(ImageButton)views[8];
-        chart=(LinearLayout)views[9];
+        monthlyConsumption =(LinearLayout)views[9];
+        lasMonthComparisonChart = (LinearLayout)views[10];
+        comparisonChartTitle = (TextView) views[11];
         displayWidgetContent();
     }
 
@@ -127,15 +132,22 @@ public class HouseDetailView implements SmartView,HouseObserver {
         House house=houseDetailController.getHouseDetailModel().getHouse();
         houseAddress.setText(house.getAddress());
         houseName.setText(house.getName());
-        displayChartContent();
+        displayMonthlyConsumptionChart();
+        displayLastMonthComparisonChart();
     }
 
-    private void displayChartContent() {
+    private void displayMonthlyConsumptionChart() {
         XYMultipleSeriesRenderer renderer = getMonthlyConsumptionRenderer();
         GraphicalView chartView = ChartFactory.getBarChartView(HouseDetailActivity.getlContext(),getMonthlyConsumptionDataset(), renderer, BarChart.Type.DEFAULT);
-        chart.addView(chartView);
+        monthlyConsumption.addView(chartView);
+
     }
 
+    private void displayLastMonthComparisonChart() {
+        XYMultipleSeriesRenderer renderer = getLasMonthComparisonRenderer();
+        GraphicalView chartView = ChartFactory.getBarChartView(HouseDetailActivity.getlContext(),getLastMonthComparisonDataset(), renderer, BarChart.Type.DEFAULT);
+        lasMonthComparisonChart.addView(chartView);
+    }
     @Override
     public void subscribeObserver() {
     // no a subscriber
@@ -170,7 +182,7 @@ public class HouseDetailView implements SmartView,HouseObserver {
         CategorySeries series = new CategorySeries("Monthly Consumption");
         int month = 1;
         for(Historique historique : houseDetailController.getSortedHistoriquesByDate()){
-            if(month > 6){
+            if(month > NB_MONTHS_TO_DISPLAY){
                 break;
             }
             series.add(new HouseConsoVO(historique).getConsommation());
@@ -181,11 +193,58 @@ public class HouseDetailView implements SmartView,HouseObserver {
         dataset.addSeries(series.toXYSeries());
         return dataset;
     }
+    public XYMultipleSeriesDataset getLastMonthComparisonDataset() {
+        CategorySeries series = new CategorySeries("Last Month Consumption comparison");
+        List<Historique> lastConsosByHouse = houseDetailController.getHouseDetailModel().getLastConsumptionsByHouse();
+        for(Historique historique : lastConsosByHouse){
+            series.add(new HouseConsoVO(historique).getConsommation());
+        }
 
+        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+        dataset.addSeries(series.toXYSeries());
+        return dataset;
+    }
     public XYMultipleSeriesRenderer getMonthlyConsumptionRenderer(){
+
+        double maxConsumption = 0;
+        for(Historique historique : houseDetailController.getSortedHistoriquesByDate()) {
+            HouseConsoVO houseConsoVO = new HouseConsoVO(historique);
+            if(houseConsoVO.getConsommation() > maxConsumption) {
+                maxConsumption = houseConsoVO.getConsommation();
+            }
+        }
+        XYMultipleSeriesRenderer renderer = getBarChartRenderer(NB_MONTHS_TO_DISPLAY,maxConsumption );
+        int month = 1;
+        for(Historique historique : houseDetailController.getSortedHistoriquesByDate()){
+            if(month > NB_MONTHS_TO_DISPLAY){
+                break;
+            }
+            renderer.addXTextLabel(month++, new HouseConsoVO(historique).getMmYear());
+        }
+        return renderer;
+    }
+
+    public XYMultipleSeriesRenderer getLasMonthComparisonRenderer() {
+        List<Historique> lastConsosByHouse = houseDetailController.getHouseDetailModel().getLastConsumptionsByHouse();
+        String oldText = String.valueOf(comparisonChartTitle.getText());
+        comparisonChartTitle.setText(oldText + " during " + lastConsosByHouse.get(0).getPeriode());
+        double maxConsumption = 0;
+        for(Historique historique : lastConsosByHouse) {
+            HouseConsoVO houseConsoVO = new HouseConsoVO(historique);
+            if(houseConsoVO.getConsommation() > maxConsumption) {
+                maxConsumption = houseConsoVO.getConsommation();
+            }
+        }
+        XYMultipleSeriesRenderer renderer = getBarChartRenderer(lastConsosByHouse.size(), maxConsumption);
+        int month = 1;
+        for(Historique historique : lastConsosByHouse){
+            renderer.addXTextLabel(month++, new HouseConsoVO(historique).getHouseName());
+        }
+        return renderer;
+    }
+
+    private XYMultipleSeriesRenderer getBarChartRenderer(double xAxisMax, double yAxisMax) {
         XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-        renderer.setAxisTitleTextSize(16);
-        renderer.setChartTitleTextSize(20);
         renderer.setLabelsTextSize(15);
 
         renderer.setMargins(new int[]{30, 40, 15, 0});
@@ -195,31 +254,15 @@ public class HouseDetailView implements SmartView,HouseObserver {
         renderer.addSeriesRenderer(r);
 
         renderer.setXAxisMin(0.5);
-        renderer.setXAxisMax(10.5);
+        renderer.setXAxisMax(xAxisMax + 1);
+        renderer.setYAxisMax(yAxisMax);
         renderer.setYAxisMin(0);
-        double maxConsumption = 0;
-        for(Historique historique : houseDetailController.getSortedHistoriquesByDate()) {
-            HouseConsoVO houseConsoVO = new HouseConsoVO(historique);
-            if(houseConsoVO.getConsommation() > maxConsumption) {
-                maxConsumption = houseConsoVO.getConsommation();
-            }
-        }
-        renderer.setYAxisMax(maxConsumption + 1);
-        int month = 1;
-        for(Historique historique : houseDetailController.getSortedHistoriquesByDate()){
-            if(month > 6){
-                break;
-            }
-            renderer.addXTextLabel(month++, new HouseConsoVO(historique).getMmYear());
-        }
-        renderer.setYLabelsAlign(Paint.Align.RIGHT);
+        renderer.setYLabelsAlign(Paint.Align.CENTER);
         renderer.setBarSpacing(1);
-        renderer.setXTitle("Months");
-        renderer.setYTitle("Consumption");
         renderer.setShowGrid(true);
         renderer.setGridColor(Color.GRAY);
         renderer.setXLabels(0); // sets the number of integer labels to appear
-        renderer.setZoomEnabled(true, false);
+        renderer.setZoomEnabled(false, false);
         renderer.setPanEnabled(false, false);
         renderer.setShowLegend(false);
         return renderer;

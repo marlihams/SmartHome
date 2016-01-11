@@ -19,5 +19,5 @@ public interface HouseDetailModelI {
     public void updateHouse(String name,String address);
     public Map getHouseDetail();
     public List<Historique> getHouseHistorique();
-
+    public List<Historique> getLastConsumptionsByHouse();
 }

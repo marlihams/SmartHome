@@ -9,6 +9,10 @@ import com.smarthome.beans.Historique;
 import com.smarthome.beans.House;
 import com.smarthome.view.HouseObserver;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,9 +74,9 @@ public class HouseDetailModel implements HouseDetailModelI{
        Map housesInfo=new HashMap();
     //TODO calculate properly this map  by communicating with devices
 
-        housesInfo.put("broke",4);
-        housesInfo.put("turnon",2);
-        housesInfo.put("turnoff",22);
+        housesInfo.put("broke", 4);
+        housesInfo.put("turnon", 2);
+        housesInfo.put("turnoff", 22);
         return housesInfo;
     }
 
@@ -97,4 +101,24 @@ public class HouseDetailModel implements HouseDetailModelI{
         return devices;
     }
 
+    @Override
+    public List<Historique> getLastConsumptionsByHouse() {
+        List<Historique> lastConsumptionByHouse = new ArrayList<Historique>();
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("MM-yyyy");
+        //récupérer la dernière période pendant laquelle il y a eu des consommations
+        List<Historique> all = historiqueCacheDao.findAll();
+        DateTime lastPeriod = formatter.parseDateTime(all.get(0).getPeriode());
+        for(int i = 1; i < all.size(); i++) {
+            if(formatter.parseDateTime(all.get(i).getPeriode()).isBefore(lastPeriod)) {
+                lastPeriod = formatter.parseDateTime(all.get(i).getPeriode());
+            }
+        }
+
+        for(Historique historique : historiqueCacheDao.findAll()) {
+            if(historique.getHouse() != null && historique.getPeriode().equals(formatter.print(lastPeriod))){
+                lastConsumptionByHouse.add(historique);
+            }
+        }
+        return lastConsumptionByHouse;
+    }
 }

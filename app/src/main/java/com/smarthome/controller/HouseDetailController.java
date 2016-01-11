@@ -52,4 +52,6 @@ public class HouseDetailController implements  HouseDetailControllerI {
         });
         return sortedHistoriques;
     }
+
+
 }
