@@ -145,6 +145,7 @@ public class LoginView  implements SmartView,SpinnerObserver {
 
     public void displayAcceuilView(User user){
         Intent intent=new Intent(LoginActivity.getlContext(),AcceuilActivity.class);
+        intent.putExtra(HousesView.SELECTEDHOUSE,houses.get(selectedElement).getId());
       ((Activity)   LoginActivity.getlContext()).startActivityForResult(intent, 100);
     }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
 
 
         private Context context;
+    private DevicesModelI devicesModel;
 
     public HashMap<String, List<Boolean>> getListSwitch() {
         return listSwitch;
@@ -39,7 +41,15 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
         // child data in format of header title, child title
         private HashMap<String, List<String>> listDevices;
 
-        public DeviceListAdapter(Context context, List<String> listPieces,HashMap<String, List<Boolean>>  listSwitch,
+    public DevicesModelI getDevicesModel() {
+        return devicesModel;
+    }
+
+    public void setDevicesModel(DevicesModelI devicesModel) {
+        this.devicesModel = devicesModel;
+    }
+
+    public DeviceListAdapter(Context context, List<String> listPieces,HashMap<String, List<Boolean>>  listSwitch,
                                      HashMap<String, List<String>> listDevices) {
             this.context = context;
             this.listPieces = listPieces;
@@ -60,25 +70,41 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
         }
 
         @Override
-        public View getChildView(int groupPosition, final int childPosition,
+        public View getChildView(final int groupPosition, final int childPosition,
                                  boolean isLastChild, View convertView, ViewGroup parent) {
 
             final String childText = (String) getChild(groupPosition, childPosition);
-            final boolean childBool=this.listSwitch.get(this.listSwitch.get(groupPosition))
+             final boolean childBool=this.listSwitch.get(this.listPieces.get(groupPosition))
                                      .get(childPosition);
+
 
             if (convertView == null) {
                 LayoutInflater infalInflater = (LayoutInflater) this.context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = infalInflater.inflate(R.layout.list_device, null);
+                convertView = infalInflater.inflate(R.layout.list_device,null,false);
             }
 
             TextView deviceName = (TextView) convertView
                     .findViewById(R.id.deviceName);
-            Switch deviceLight=(Switch)convertView.findViewById(R.id.deviceLight);
+            final Switch deviceLight=(Switch)convertView.findViewById(R.id.deviceLight);
+          //  deviceLight.setFocusable(false);
+            deviceLight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (childBool != isChecked) {
+                        devicesModel.notifySwitchObserver(groupPosition, childPosition,isChecked);
+                    }
+
+
+                }
+            });
+
 
             deviceName.setText(childText);
             deviceLight.setChecked(childBool);
+            convertView.setClickable(false);
+
             return convertView;
         }
 
@@ -117,7 +143,7 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
                     .findViewById(R.id.listPiece);
             lblListHeader.setTypeface(null, Typeface.BOLD);
             lblListHeader.setText(headerTitle);
-
+            convertView.setClickable(false);
             return convertView;
         }
 
@@ -128,7 +154,28 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
 
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
+                return true;
         }
+    public void addItem(String piece,String name,boolean etat) {
 
+        if (!listPieces.contains(piece)) {
+            listPieces.add(piece);
+        }
+        listDevices.get(piece).add(name);
+        listSwitch.get(piece).add(etat);
+    }
+    public void removeItem(String piece){
+        if (listPieces.contains(piece)) {
+            listDevices.get(piece).clear();
+            listSwitch.get(piece).clear();
+            listPieces.remove(piece);
+
+        }
+    }
+    public void removeItem(String piece,int positionChild){
+
+            listDevices.get(piece).remove(positionChild);
+            listSwitch.get(piece).remove(positionChild);
+            listPieces.remove(piece);
+        }
 }

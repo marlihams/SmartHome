@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
+    android:layout_width="fill_parent"
+    android:layout_height="150dp"
+    android:layout_marginBottom="20dp"
+    android:focusable="false"
+    android:background="#edeaea"
     >
 
-
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
         android:text="New Text"
         android:id="@+id/deviceName"
+        android:textSize="20dp"
+
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="10dp"
+        android:focusable="false"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
 
     <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
         android:id="@+id/deviceLight"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginLeft="200dp"/>
+        android:focusable="false"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="100dp"/>
+
 
 </LinearLayout>

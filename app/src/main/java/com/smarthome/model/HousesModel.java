@@ -38,16 +38,14 @@ public class HousesModel  implements  HousesModelI{
     public HousesModel() {
 
         houseCacheDao=new HouseCacheDao(HousesActivity.getlContext());
+         houses= houseCacheDao.findAll();
         initializeAdapter();
 
     }
 
     @Override
     public List<House> getHouses(){
-
-        if (houses==null)
-            houses= houseCacheDao.findAll();
-        return houses;
+        return  houses;
     }
 
     @Override

@@ -66,6 +66,7 @@ public class HouseDetailModel implements HouseDetailModelI{
         house.setAddress(address);
         notifyHouseObserver();
         updateAllDevice();
+        houseCacheDao.createOrUpdate(house);
 
     }
 

@@ -85,6 +85,7 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
 
     @Override
     public void onBackPressed(){
+
         startActivity(new Intent(this, HousesActivity.class));
     }
 

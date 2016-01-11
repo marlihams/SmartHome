@@ -5,6 +5,8 @@ import com.smarthome.model.DevicesModelI;
 import com.smarthome.view.DevicesView;
 import com.smarthome.view.SmartView;
 
+import java.util.List;
+
 /**
  * Created by Mdiallo on 19/12/2015.
  */
@@ -13,10 +15,27 @@ public class DevicesController implements DevicesControllerI {
     private DevicesView devicesView;
     private DevicesModelI devicesModel;
 
+    public DevicesModelI getDevicesModel() {
+        return devicesModel;
+    }
 
-    public DevicesController() {
+    @Override
+    public void deleteDevice(List<Integer> position) {
 
-        devicesModel=new DevicesModel();
+    }
+
+    @Override
+    public void createNewDevice(String name, String address) {
+
+    }
+
+    public void setDevicesModel(DevicesModelI devicesModel) {
+        this.devicesModel = devicesModel;
+    }
+
+    public DevicesController(DevicesModelI devicesModel) {
+
+        this.devicesModel=devicesModel;
         devicesView=new DevicesView(this,devicesModel);
     }
 
@@ -24,7 +43,5 @@ public class DevicesController implements DevicesControllerI {
     public SmartView getView() {
         return devicesView;
     }
-
-
 
 }

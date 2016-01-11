@@ -12,6 +12,7 @@ import com.smarthome.android.LoginActivity;
 import com.smarthome.android.UserActivity;
 import com.smarthome.beans.House;
 import com.smarthome.beans.User;
+import com.smarthome.controller.Test;
 import com.smarthome.view.SpinnerObserver;
 import com.smarthome.view.UserObsever;
 
@@ -101,12 +102,12 @@ public class UserModel implements UserModelI {
                 e.printStackTrace();
             }
 
-              userDao.removeAll();
+
+        userDao.removeAll();
         userDao.createAll();
             Test.init(LoginActivity.getlContext());
             Test.fillDatabase();*/
-            userCacheDao.deleteAll();
-
+         //   userCacheDao.deleteAll();
 
         User userCache = userCacheDao.getUserFromCache(user); // check is user is already on cache
         if (userCache == null || !(user.getEmail().equals(userCache.getEmail())) ||!(user.getPassword().equals(userCache.getPassword())) ) { //check on database
@@ -114,7 +115,6 @@ public class UserModel implements UserModelI {
             if (userCache != null) {
                 DatabaseAndCache.init(LoginActivity.getlContext());
                 DatabaseAndCache.loadDataInCache(userCache);
-
 
 
             }
