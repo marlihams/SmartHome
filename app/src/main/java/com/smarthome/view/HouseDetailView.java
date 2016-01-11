@@ -189,6 +189,7 @@ public class HouseDetailView implements SmartView,HouseObserver {
         renderer.setLabelsTextSize(15);
 
         renderer.setMargins(new int[]{30, 40, 15, 0});
+        renderer.setMarginsColor(Color.argb(0x00, 0xff, 0x00, 0x00)); // transparent margins
         XYSeriesRenderer r = new XYSeriesRenderer();
         r.setColor(Color.BLUE);
         renderer.addSeriesRenderer(r);
@@ -218,7 +219,9 @@ public class HouseDetailView implements SmartView,HouseObserver {
         renderer.setShowGrid(true);
         renderer.setGridColor(Color.GRAY);
         renderer.setXLabels(0); // sets the number of integer labels to appear
-        renderer.setZoomEnabled(false, false);
+        renderer.setZoomEnabled(true, false);
+        renderer.setPanEnabled(false, false);
+        renderer.setShowLegend(false);
         return renderer;
     }
 }

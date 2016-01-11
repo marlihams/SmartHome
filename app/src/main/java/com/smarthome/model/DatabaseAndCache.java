@@ -105,7 +105,6 @@ public class DatabaseAndCache {
             historiques.addAll(historiqueDao.findAllByForeignKey(historique, "house_id"));
         }
         return historiques;
-
     }
 
 }
