@@ -1,23 +1,14 @@
 package com.smarthome.Dao;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.table.TableUtils;
 import com.smarthome.beans.Bean;
-import com.smarthome.beans.ConsoDevice;
-import com.smarthome.beans.ConsoHouse;
-import com.smarthome.beans.Device;
-import com.smarthome.beans.Historique;
-import com.smarthome.beans.House;
-import com.smarthome.beans.User;
 import com.smarthome.database.DatabaseHelper;
 import com.smarthome.database.DatabaseManager;
 
 import java.lang.reflect.ParameterizedType;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -104,7 +95,12 @@ public abstract class BaseDao<T extends Bean> implements SmartHomeDao<T> {
     public void  emptyTable(){
         getHelper().emptyTable();
     }
+    public void removeAll(){
+        getHelper().removeAll();
+    }
 
 
-
+    public void createAll() {
+        getHelper().createTable();
+    }
 }

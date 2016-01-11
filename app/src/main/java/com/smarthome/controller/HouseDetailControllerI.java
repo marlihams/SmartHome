@@ -1,8 +1,7 @@
 package com.smarthome.controller;
 
-import com.smarthome.model.HouseDetailModel;
+import com.smarthome.beans.Historique;
 import com.smarthome.model.HouseDetailModelI;
-import com.smarthome.model.HousesModelI;
 
 import java.util.List;
 
@@ -15,5 +14,7 @@ public interface HouseDetailControllerI extends SmartHomeControllerI {
     HouseDetailModelI getHouseDetailModel();
 
     //public List<String> getHousesName();
+
+    public List<Historique> getSortedHistoriquesByDate();
 }
 

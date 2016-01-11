@@ -2,12 +2,12 @@ package com.smarthome.beans;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
-
-import java.io.Serializable;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by Mdiallo on 20/12/2015.
  */
+@DatabaseTable(tableName = "house")
 public class House extends BeanAbstract{
 
     @Expose

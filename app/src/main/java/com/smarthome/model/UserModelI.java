@@ -1,8 +1,8 @@
 package com.smarthome.model;
 
 import com.smarthome.Dao.UserDao;
-import com.smarthome.beans.User;
 import com.smarthome.beans.House;
+import com.smarthome.beans.User;
 import com.smarthome.view.SpinnerObserver;
 import com.smarthome.view.UserObsever;
 

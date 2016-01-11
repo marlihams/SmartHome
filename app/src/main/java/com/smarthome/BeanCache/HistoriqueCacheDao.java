@@ -2,7 +2,6 @@ package com.smarthome.BeanCache;
 
 import android.content.Context;
 
-import com.smarthome.beans.Device;
 import com.smarthome.beans.Historique;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class HistoriqueCacheDao extends CacheDao<Historique> {
         List<Historique>historique=new ArrayList<Historique>();
         List<Historique>cache=this.findAll();
         for (int i=0,len=cache.size();i<len;i++){
-            if (cache.get(i).getHouseConso().getHouse().getId()==houseId){
+            if (cache.get(i).getHouse() != null && cache.get(i).getHouse().getId()==houseId){
                 historique.add(cache.get(i));
             }
         }

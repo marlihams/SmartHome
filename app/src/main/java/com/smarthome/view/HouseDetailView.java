@@ -1,14 +1,13 @@
 package com.smarthome.view;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,8 +19,16 @@ import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Historique;
 import com.smarthome.beans.House;
 import com.smarthome.controller.HouseDetailControllerI;
-import com.smarthome.controller.HousesControllerI;
 import com.smarthome.model.HouseDetailModelI;
+import com.smarthome.vo.HouseConsoVO;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.chart.BarChart;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -49,6 +56,7 @@ public class HouseDetailView implements SmartView,HouseObserver {
     private Spinner historiqueDate;
     private TextView  consoPeriode;
     private ImageButton submit;
+    private LinearLayout chart;
 
     public HouseDetailView(HouseDetailControllerI houseDetailController,HouseDetailModelI houseDetailModel) {
         this.houseDetailController = houseDetailController;
@@ -69,6 +77,7 @@ public class HouseDetailView implements SmartView,HouseObserver {
         historiqueDate=(Spinner)views[6];
         consoPeriode=(TextView)views[7];
         submit=(ImageButton)views[8];
+        chart=(LinearLayout)views[9];
         displayWidgetContent();
     }
 
@@ -96,6 +105,7 @@ public class HouseDetailView implements SmartView,HouseObserver {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 consoPeriode.setText(addSymbole(consommation.get(position)));
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 //do Nothing
@@ -117,7 +127,13 @@ public class HouseDetailView implements SmartView,HouseObserver {
         House house=houseDetailController.getHouseDetailModel().getHouse();
         houseAddress.setText(house.getAddress());
         houseName.setText(house.getName());
+        displayChartContent();
+    }
 
+    private void displayChartContent() {
+        XYMultipleSeriesRenderer renderer = getMonthlyConsumptionRenderer();
+        GraphicalView chartView = ChartFactory.getBarChartView(HouseDetailActivity.getlContext(),getMonthlyConsumptionDataset(), renderer, BarChart.Type.DEFAULT);
+        chart.addView(chartView);
     }
 
     @Override
@@ -138,8 +154,8 @@ public class HouseDetailView implements SmartView,HouseObserver {
         List<String>houseHistorique=new ArrayList<String>();
         List<Historique> historique=houseDetailController.getHouseDetailModel().getHouseHistorique();
         for (int i=0,len=historique.size();i<len;i++){
-            houseHistorique.add(historique.get(i).getDateDebut()+" : "+historique.get(i).getDateFin());
-            consommation.add(historique.get(i).getHouseConso().getConsomation());
+            houseHistorique.add(historique.get(i).getPeriode());
+            consommation.add(String.valueOf(historique.get(i).getConsommation()));
         }
 
         ArrayAdapter<String> adapter= new ArrayAdapter(HouseDetailActivity.getlContext(),android.R.layout.simple_list_item_1,houseHistorique);
@@ -148,5 +164,61 @@ public class HouseDetailView implements SmartView,HouseObserver {
     }
     private  String addSymbole(String a){
         return a+ " "+ Currency.getInstance(Locale.getDefault()).getSymbol();
+    }
+
+    public XYMultipleSeriesDataset getMonthlyConsumptionDataset(){
+        CategorySeries series = new CategorySeries("Monthly Consumption");
+        int month = 1;
+        for(Historique historique : houseDetailController.getSortedHistoriquesByDate()){
+            if(month > 6){
+                break;
+            }
+            series.add(new HouseConsoVO(historique).getConsommation());
+            month ++;
+        }
+
+        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+        dataset.addSeries(series.toXYSeries());
+        return dataset;
+    }
+
+    public XYMultipleSeriesRenderer getMonthlyConsumptionRenderer(){
+        XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
+        renderer.setAxisTitleTextSize(16);
+        renderer.setChartTitleTextSize(20);
+        renderer.setLabelsTextSize(15);
+
+        renderer.setMargins(new int[]{30, 40, 15, 0});
+        XYSeriesRenderer r = new XYSeriesRenderer();
+        r.setColor(Color.BLUE);
+        renderer.addSeriesRenderer(r);
+
+        renderer.setXAxisMin(0.5);
+        renderer.setXAxisMax(10.5);
+        renderer.setYAxisMin(0);
+        double maxConsumption = 0;
+        for(Historique historique : houseDetailController.getSortedHistoriquesByDate()) {
+            HouseConsoVO houseConsoVO = new HouseConsoVO(historique);
+            if(houseConsoVO.getConsommation() > maxConsumption) {
+                maxConsumption = houseConsoVO.getConsommation();
+            }
+        }
+        renderer.setYAxisMax(maxConsumption + 1);
+        int month = 1;
+        for(Historique historique : houseDetailController.getSortedHistoriquesByDate()){
+            if(month > 6){
+                break;
+            }
+            renderer.addXTextLabel(month++, new HouseConsoVO(historique).getMmYear());
+        }
+        renderer.setYLabelsAlign(Paint.Align.RIGHT);
+        renderer.setBarSpacing(1);
+        renderer.setXTitle("Months");
+        renderer.setYTitle("Consumption");
+        renderer.setShowGrid(true);
+        renderer.setGridColor(Color.GRAY);
+        renderer.setXLabels(0); // sets the number of integer labels to appear
+        renderer.setZoomEnabled(false, false);
+        return renderer;
     }
 }

@@ -3,7 +3,6 @@ package com.smarthome.database;
 import android.content.Context;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.smarthome.beans.User;
 
 /**
  * Created by Mdiallo on 19/12/2015.

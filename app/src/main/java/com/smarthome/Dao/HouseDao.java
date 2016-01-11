@@ -22,4 +22,5 @@ public class HouseDao extends BaseDao<House> {
         super();
         super.context = ctx;
     }
+
 }

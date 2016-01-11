@@ -1,22 +1,10 @@
 package com.smarthome.android;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,6 +16,8 @@ import com.smarthome.model.HouseDetailModelI;
 import com.smarthome.view.HouseDetailView;
 import com.smarthome.view.HousesView;
 import com.smarthome.view.SmartHomeView;
+
+import org.achartengine.GraphicalView;
 
 public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeView {
 
@@ -49,6 +39,8 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
     private int houseId;
     private ImageButton submit;
     private TextView title;
+    private GraphicalView monthlyConsumption;
+    private LinearLayout chart;
 
 
     @Override
@@ -72,11 +64,11 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
         historiqueDate=(Spinner)findViewById(R.id.conso_date);
         consoPeriode=(TextView)findViewById(R.id.consommation);
         submit=(ImageButton)findViewById(R.id.submit);
-
+        chart=(LinearLayout)findViewById(R.id.chart);
         //getting object from their Ids
 
         initializeMvc();
-        houseDetailView.initializeWidget(houseName,houseAddress,nbDevice,nbBroke,nbTurnOff,nbTurnOn,historiqueDate,consoPeriode,submit);
+        houseDetailView.initializeWidget(houseName, houseAddress, nbDevice, nbBroke, nbTurnOff, nbTurnOn, historiqueDate, consoPeriode, submit,chart);
 
         houseDetailView.setListener();
 
@@ -92,7 +84,8 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
 
     @Override
     public void onBackPressed(){
-        startActivity(new Intent(this,HousesActivity.class));
+        startActivity(new Intent(this, HousesActivity.class));
     }
+
 
 }

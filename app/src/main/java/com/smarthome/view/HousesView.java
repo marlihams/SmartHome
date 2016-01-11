@@ -2,38 +2,26 @@ package com.smarthome.view;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.smarthome.R;
-
 import com.smarthome.android.HouseDetailActivity;
 import com.smarthome.android.HousesActivity;
 import com.smarthome.android.SmartAnimation;
-import com.smarthome.beans.User;
-import com.smarthome.controller.HousesControllerI;
-import com.smarthome.model.HomeAdapter;
 import com.smarthome.beans.House;
-import com.smarthome.model.HousesModel;
+import com.smarthome.controller.HousesControllerI;
 import com.smarthome.model.HousesModelI;
 import com.smarthome.model.RecyclerItemClickListener;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Mdiallo on 20/12/2015.

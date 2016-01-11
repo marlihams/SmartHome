@@ -1,19 +1,10 @@
 package com.smarthome.view;
 
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.smarthome.R;
 import com.smarthome.android.AcceuilActivity;
-import com.smarthome.android.DevicesActivity;
-import com.smarthome.android.HousesActivity;
-import com.smarthome.android.LoginActivity;
 import com.smarthome.android.SmartAnimation;
-import com.smarthome.android.UserActivity;
-import com.smarthome.controller.AcceuilController;
 import com.smarthome.controller.AcceuilControllerI;
 
 /**

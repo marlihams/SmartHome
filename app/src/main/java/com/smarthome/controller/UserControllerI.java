@@ -1,6 +1,7 @@
 package com.smarthome.controller;
 
-import com.smarthome.beans.*;
+import com.smarthome.beans.House;
+import com.smarthome.beans.User;
 
 /**
  * Created by Mdiallo on 19/12/2015.

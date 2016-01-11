@@ -2,9 +2,6 @@ package com.smarthome.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import com.smarthome.beans.User;
 
 /**
  * Created by Mdiallo on 19/12/2015.

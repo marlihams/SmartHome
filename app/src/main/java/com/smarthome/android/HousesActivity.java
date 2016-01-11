@@ -1,17 +1,12 @@
 package com.smarthome.android;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.smarthome.R;
-import com.smarthome.controller.AcceuilController;
-import com.smarthome.controller.AcceuilControllerI;
 import com.smarthome.controller.HousesController;
 import com.smarthome.model.HousesModel;
 import com.smarthome.model.HousesModelI;

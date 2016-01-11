@@ -3,24 +3,15 @@ package com.smarthome.model;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import com.smarthome.BeanCache.HouseCacheDao;
 import com.smarthome.BeanCache.UserCacheDao;
 import com.smarthome.Dao.HouseDao;
 import com.smarthome.Dao.UserDao;
 import com.smarthome.android.HousesActivity;
-import com.smarthome.android.HousesActivity;
 import com.smarthome.android.LoginActivity;
 import com.smarthome.android.UserActivity;
-import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
 import com.smarthome.beans.User;
-import com.smarthome.controller.Test;
-import com.smarthome.database.CacheManager;
-import com.smarthome.database.CacheManagerI;
-import com.smarthome.database.DatabaseManager;
-import com.smarthome.database.DatabaseManagerI;
 import com.smarthome.view.SpinnerObserver;
 import com.smarthome.view.UserObsever;
 
@@ -99,12 +90,23 @@ public class UserModel implements UserModelI {
     }
 
     @Override
-    public void updateHouse(User user) {
-//       userDao.emptyTable();
-//
-//        Test.init(LoginActivity.getlContext());
-//        Test.fillDatabase();
-//        userCacheDao.deleteAll();
+    public void updateHouse(User user)  {
+    //  userDao.emptyTable();
+
+       /*     try {
+
+             //   userDao.getConnection().executeRaw("drop database smarthome.db");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+              userDao.removeAll();
+        userDao.createAll();
+            Test.init(LoginActivity.getlContext());
+            Test.fillDatabase();*/
+            userCacheDao.deleteAll();
+
 
         User userCache = userCacheDao.getUserFromCache(user); // check is user is already on cache
         if (userCache == null || !(user.getEmail().equals(userCache.getEmail())) ||!(user.getPassword().equals(userCache.getPassword())) ) { //check on database

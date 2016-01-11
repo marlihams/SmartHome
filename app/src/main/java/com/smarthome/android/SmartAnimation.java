@@ -1,8 +1,8 @@
 package com.smarthome.android;
 
 import android.content.Context;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.smarthome.R;
 

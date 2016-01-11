@@ -1,10 +1,10 @@
 package com.smarthome.model;
+
 import com.smarthome.beans.Device;
 import com.smarthome.beans.Historique;
 import com.smarthome.beans.House;
 import com.smarthome.view.HouseObserver;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

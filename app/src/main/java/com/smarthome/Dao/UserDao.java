@@ -2,12 +2,7 @@ package com.smarthome.Dao;
 
 import android.content.Context;
 
-import com.smarthome.beans.Device;
-import com.smarthome.beans.House;
 import com.smarthome.beans.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Mdiallo on 20/12/2015.
@@ -26,5 +21,6 @@ public class UserDao extends BaseDao<User>{
         super();
         super.context=ctx;
     }
+
 
 }

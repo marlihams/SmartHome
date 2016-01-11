@@ -2,12 +2,12 @@ package com.smarthome.beans;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
-
-import java.io.Serializable;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by Mdiallo on 19/12/2015.
  */
+@DatabaseTable(tableName = "user")
 public class User  extends BeanAbstract{
 
     private static final long serialVersionUID = -222864131214757024L;

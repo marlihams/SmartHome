@@ -1,18 +1,11 @@
 package com.smarthome.view;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
-
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.model.DevicesModelI;
-
-import java.util.List;
 
 /**
  * Created by Mdiallo on 20/12/2015.

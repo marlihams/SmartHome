@@ -1,12 +1,8 @@
 package com.smarthome.model;
 
-import com.smarthome.BeanCache.ConsoHouseCacheDao;
 import com.smarthome.BeanCache.HouseCacheDao;
-import com.smarthome.Dao.ConsoHouseDao;
 import com.smarthome.android.HousesActivity;
-import com.smarthome.beans.ConsoHouse;
 import com.smarthome.beans.Device;
-import com.smarthome.beans.Historique;
 import com.smarthome.beans.House;
 import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.view.HouseObserver;
@@ -23,7 +19,7 @@ public class HousesModel  implements  HousesModelI{
 
     private  List<House> houses;
     private List<HouseObserver> houseObservers=new ArrayList<HouseObserver>();
-    private List<ConsoHouse> historiques;
+
     private HouseCacheDao houseCacheDao;
     private ElectronicManager electronicManager;
     private List<Device> devices;

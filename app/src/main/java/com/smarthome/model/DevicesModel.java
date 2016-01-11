@@ -2,9 +2,7 @@ package com.smarthome.model;
 
 import com.smarthome.BeanCache.DeviceCacheDao;
 import com.smarthome.android.DevicesActivity;
-import com.smarthome.android.HousesActivity;
 import com.smarthome.beans.Device;
-import com.smarthome.beans.House;
 import com.smarthome.view.DeviceObserver;
 
 import java.util.ArrayList;

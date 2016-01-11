@@ -2,13 +2,8 @@ package com.smarthome.android;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.ExpandableListView;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.smarthome.R;
-import com.smarthome.controller.DevicesController;
-import com.smarthome.view.DevicesView;
 import com.smarthome.view.SmartHomeView;
 
 /**

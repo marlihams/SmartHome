@@ -1,10 +1,10 @@
 package com.smarthome.controller;
 
-import com.smarthome.model.HousesModel;
+import com.smarthome.beans.House;
 import com.smarthome.model.HousesModelI;
 import com.smarthome.view.HousesView;
 import com.smarthome.view.SmartView;
-import com.smarthome.beans.House;
+
 import java.util.ArrayList;
 import java.util.List;
 

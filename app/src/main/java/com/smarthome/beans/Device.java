@@ -2,10 +2,12 @@ package com.smarthome.beans;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by Mdiallo on 21/12/2015.
  */
+@DatabaseTable(tableName = "Device")
 public class Device extends BeanAbstract{
     @Expose
     @DatabaseField(generatedId = true, columnName = "device_id")
@@ -19,11 +21,23 @@ public class Device extends BeanAbstract{
     @Expose
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private House house;
+    @Expose
+    @DatabaseField
+    private String adress;
 
-    public Device(String name, String pieceName, House house) {
+    public String getAdress() {
+        return adress;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public Device(String name, String pieceName, House house, String adress) {
         this.name = name;
         this.pieceName = pieceName;
         this.house = house;
+        this.adress = adress;
     }
     public Device(House house,String name,String pieceName) {
 

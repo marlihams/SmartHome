@@ -2,52 +2,75 @@ package com.smarthome.beans;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
-
-import java.util.Date;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by Mdiallo on 21/12/2015.
  */
+@DatabaseTable(tableName = "Historique")
 public class Historique extends BeanAbstract {
 
     @Expose
-    @DatabaseField(generatedId = true, columnName = "historique_id")
+    @DatabaseField(generatedId = true)
     private int id;
     @Expose
-    @DatabaseField(columnName = "historique_dateDebut")
-    private String dateDebut;
+    @DatabaseField
+    private String periode;
+
     @Expose
-    @DatabaseField(columnName = "historique_dateFin")
-    private String dateFin;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private Device device;
+
     @Expose
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
-    private ConsoDevice deviceConso;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private House house;
+
     @Expose
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
-    private ConsoHouse houseConso;
+    @DatabaseField
+    private double consommation;
 
-    public ConsoDevice getDeviceConso() {
-        return deviceConso;
+    public Historique(String periode, Device device, double consommation) {
+        this.periode = periode;
+        this.device = device;
+        this.consommation = consommation;
     }
 
-    public void setDeviceConso(ConsoDevice deviceConso) {
-        this.deviceConso = deviceConso;
+    public Historique(String periode, House house, double consommation) {
+        this.periode = periode;
+        this.house = house;
+        this.consommation = consommation;
     }
 
-    public ConsoHouse getHouseConso() {
-        return houseConso;
+    public String getPeriode() {
+        return periode;
     }
 
-    public void setHouseConso(ConsoHouse houseConso) {
-        this.houseConso = houseConso;
+    public void setPeriode(String periode) {
+        this.periode = periode;
     }
 
-    public Historique(String dateDebut, String dateFin, ConsoDevice deviceConso, ConsoHouse houseConso) {
+    public Device getDevice() {
+        return device;
+    }
 
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        this.deviceConso = deviceConso;
-        this.houseConso = houseConso;
+    public void setDevice(Device device) {
+        this.device = device;
+    }
+
+    public House getHouse() {
+        return house;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public double getConsommation() {
+        return consommation;
+    }
+
+    public void setConsommation(double consommation) {
+        this.consommation = consommation;
     }
 
     public Historique() {
@@ -67,23 +90,6 @@ public class Historique extends BeanAbstract {
 
     @Override
     public Bean getForeignKey(String foreignKey) {
-        return  foreignKey.equals("consoDevice_id")? deviceConso:houseConso;
-    }
-
-
-    public String getDateDebut() {
-        return dateDebut;
-    }
-
-    public void setDateDebut(String dateDebut) {
-        this.dateDebut = dateDebut;
-    }
-
-    public String getDateFin() {
-        return dateFin;
-    }
-
-    public void setDateFin(String dateFin) {
-        this.dateFin = dateFin;
+        return foreignKey.equals("device_id")?device:house;
     }
 }

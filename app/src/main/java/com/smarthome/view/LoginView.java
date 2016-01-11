@@ -1,10 +1,7 @@
 package com.smarthome.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,9 +18,8 @@ import com.smarthome.android.AcceuilActivity;
 import com.smarthome.android.LoginActivity;
 import com.smarthome.android.SmartAnimation;
 import com.smarthome.android.UserActivity;
-import com.smarthome.beans.*;
-import com.smarthome.controller.Test;
-import com.smarthome.controller.UserController;
+import com.smarthome.beans.House;
+import com.smarthome.beans.User;
 import com.smarthome.controller.UserControllerI;
 import com.smarthome.model.UserModel;
 import com.smarthome.model.UserModelI;
@@ -76,6 +72,8 @@ public class LoginView  implements SmartView,SpinnerObserver {
         connexionView=(Button)views[3];
         newAccountView=(ImageButton)views[4];
         spinner=(Spinner)views[5];
+        emailView.setText("mohamedmadioud@yahoo.fr");
+        passwordView.setText("smarthome");
 
     }
 

@@ -1,7 +1,5 @@
 package com.smarthome.Dao;
 
-import com.smarthome.beans.Bean;
-
 import java.util.List;
 
 /**

@@ -4,7 +4,6 @@ import com.google.gson.InstanceCreator;
 import com.smarthome.beans.Bean;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 /**
  * Created by Mdiallo on 27/12/2015.

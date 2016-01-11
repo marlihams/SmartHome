@@ -22,4 +22,27 @@ public class HistoriqueDao extends BaseDao<Historique> {
         super();
         super.context = ctx;
     }
+
+    /*
+    @Override
+    public List<Historique> findAllByForeignKey(Historique obj,String foreignKey){
+
+        try {
+            if(obj.getHouse() != null) {
+                QueryBuilder<Historique,Object> qb = getConnection().queryBuilder();
+                Where where = qb.where();
+                where.or(
+                        where.eq("house", obj.getHouse()),
+                        where.eq("device",obj.getHouse())
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.EMPTY_LIST;
+        }
+        return null;
+    }
+    */
+
 }

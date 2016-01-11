@@ -1,15 +1,15 @@
 package com.smarthome.controller;
 
-import com.smarthome.beans.House;
-import com.smarthome.model.HouseDetailModel;
+import com.smarthome.beans.Historique;
 import com.smarthome.model.HouseDetailModelI;
-import com.smarthome.model.HousesModel;
-import com.smarthome.model.HousesModelI;
 import com.smarthome.view.HouseDetailView;
-import com.smarthome.view.HousesView;
 import com.smarthome.view.SmartView;
 
-import java.util.ArrayList;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,5 +36,20 @@ public class HouseDetailController implements  HouseDetailControllerI {
     @Override
     public HouseDetailModelI getHouseDetailModel() {
        return houseDetailModel;
+    }
+
+    @Override
+    public List<Historique> getSortedHistoriquesByDate() {
+        List<Historique> sortedHistoriques = getHouseDetailModel().getHouseHistorique();
+
+        Collections.sort(sortedHistoriques, new Comparator<Historique>() {
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("MM-yyyy");
+
+            @Override
+            public int compare(Historique one, Historique two) {
+                return formatter.parseDateTime(two.getPeriode()).compareTo(formatter.parseDateTime(one.getPeriode()));
+            }
+        });
+        return sortedHistoriques;
     }
 }

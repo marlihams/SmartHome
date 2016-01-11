@@ -1,14 +1,10 @@
 package com.smarthome.controller;
 
-import android.util.Log;
-
-import com.smarthome.Dao.UserDao;
-import com.smarthome.beans.*;
+import com.smarthome.beans.House;
+import com.smarthome.beans.User;
 import com.smarthome.model.UserModelI;
 import com.smarthome.view.LoginView;
 import com.smarthome.view.UserView;
-
-import java.util.List;
 
 /**
  * Created by Mdiallo on 19/12/2015.

@@ -1,11 +1,9 @@
 package com.smarthome.model;
 
-import com.smarthome.BeanCache.ConsoHouseCacheDao;
 import com.smarthome.BeanCache.DeviceCacheDao;
 import com.smarthome.BeanCache.HistoriqueCacheDao;
 import com.smarthome.BeanCache.HouseCacheDao;
 import com.smarthome.android.HouseDetailActivity;
-import com.smarthome.android.HousesActivity;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.Historique;
 import com.smarthome.beans.House;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -99,4 +96,5 @@ public class HouseDetailModel implements HouseDetailModelI{
     public List<Device> getDevices() {
         return devices;
     }
+
 }
