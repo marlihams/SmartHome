@@ -1,9 +1,17 @@
 package com.smarthome.view;
 
+
+import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+
+
 import android.view.View;
 import android.widget.ImageButton;
 
 import com.smarthome.android.AcceuilActivity;
+import com.smarthome.android.DevicesActivity;
 import com.smarthome.android.SmartAnimation;
 import com.smarthome.controller.AcceuilControllerI;
 
@@ -18,8 +26,15 @@ public class  AcceuilView implements SmartView {
     private ImageButton profil;
     private ImageButton homes;
     private ImageButton devices;
+    int houseId;
 
+    public int getHouseId() {
+        return houseId;
+    }
 
+    public void setHouseId(int houseId) {
+        this.houseId = houseId;
+    }
 
     @Override
     public void initializeWidget(View... views) {
@@ -43,7 +58,9 @@ public class  AcceuilView implements SmartView {
             @Override
             public void onClick(View v) {
                 v.startAnimation(SmartAnimation.wave_scale);
-                SmartChangeView.changeView(AcceuilActivity.getlContext(), "devices");
+                Intent intent=new Intent(AcceuilActivity.getlContext(),DevicesActivity.class);
+                intent.putExtra(HousesView.SELECTEDHOUSE,houseId);
+               AcceuilActivity.getlContext().startActivity(intent);
 
             }
         });

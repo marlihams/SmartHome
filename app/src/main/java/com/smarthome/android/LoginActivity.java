@@ -1,23 +1,23 @@
 package com.smarthome.android;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Spinner;
+        import android.app.Activity;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.os.Bundle;
+        import android.view.View;
+        import android.widget.AutoCompleteTextView;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.widget.ImageButton;
+        import android.widget.Spinner;
 
-import com.smarthome.R;
-import com.smarthome.controller.UserController;
-import com.smarthome.controller.UserControllerI;
-import com.smarthome.model.UserModel;
-import com.smarthome.model.UserModelI;
-import com.smarthome.view.LoginView;
-import com.smarthome.view.SmartHomeView;
+        import com.smarthome.R;
+        import com.smarthome.controller.UserController;
+        import com.smarthome.controller.UserControllerI;
+        import com.smarthome.model.UserModel;
+        import com.smarthome.model.UserModelI;
+        import com.smarthome.view.LoginView;
+        import com.smarthome.view.SmartHomeView;
 
 public class LoginActivity extends Activity implements SmartHomeView {
 
@@ -40,6 +40,10 @@ public class LoginActivity extends Activity implements SmartHomeView {
         lContext=this;
         // creation controller view model
         initializeMvc();
+        Intent i=getIntent();
+//        if(i.getIntExtra("finish",0)!=0) {
+//            this.finish();
+//        }
 
         //getting object from their Ids
         emailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -66,13 +70,13 @@ public class LoginActivity extends Activity implements SmartHomeView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(resultCode)
-        {
-            case RESULT_CLOSE_ALL:
-                setResult(RESULT_CLOSE_ALL);
-                finish();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+//        switch(resultCode)
+//        {
+//            case RESULT_CLOSE_ALL:
+//                setResult(RESULT_CLOSE_ALL);
+//                finish();
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
     }
 }
 

@@ -4,13 +4,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp"
-    android:background="@color/colorPrimaryDark">
+    >
 
 
     <TextView
         android:id="@+id/listPiece"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="43dp"
+        android:textSize="20dp"
+        android:text="group1"
+        android:textColor="#969393"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         />
 

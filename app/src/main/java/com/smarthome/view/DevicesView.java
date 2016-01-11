@@ -1,8 +1,25 @@
 package com.smarthome.view;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+
+
+import com.smarthome.android.DeviceDetailActivity;
+import com.smarthome.android.DevicesActivity;
+import com.smarthome.android.HousesActivity;
+import com.smarthome.android.SmartAnimation;
+import com.smarthome.beans.Device;
+import com.smarthome.controller.DevicesController;
+import com.smarthome.controller.DevicesControllerI;
+import com.smarthome.model.DevicesModelI;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.model.DevicesModelI;
@@ -13,16 +30,26 @@ import com.smarthome.model.DevicesModelI;
 
 public class DevicesView implements SmartView,DeviceObserver {
 
-
+    public static  final String SELECTEDDEVICE="deviceId";
     private ExpandableListView expandableListeDevices;
     private DevicesModelI devicesModel;
     private DevicesControllerI devicesController;
     private ImageButton addPiece;
     private ImageButton deletePiece;
+    private int piecePosition;
+    private int devicePosition;
+    public List<Integer> getPosition() {
+        return position;
+    }
 
-    public DevicesView(DevicesControllerI devicesController,DevicesModelI deviceModel) {
+    private List<Integer> position;
+    int selected;
+
+    public DevicesView(DevicesControllerI devicesController,DevicesModelI devicesModel) {
         this.devicesController = devicesController;
         this.devicesModel = devicesModel;
+        this.position = new ArrayList<Integer>();
+        selected=-1;
         subscribeObserver();
 
     }
@@ -39,7 +66,7 @@ public class DevicesView implements SmartView,DeviceObserver {
 
     @Override
     public void setListener() {
-
+        SmartAnimation.init(DevicesActivity.getlContext());
         addPiece.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,12 +76,55 @@ public class DevicesView implements SmartView,DeviceObserver {
         deletePiece.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(SmartAnimation.fad_in);
+                int a=0;
+
+            }
+        });
+
+        expandableListeDevices.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                int ada = 3;
+                return false;
+            }
+        });
+        expandableListeDevices.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                int itemType = ExpandableListView.getPackedPositionType(id);
+                view.setAnimation(SmartAnimation.fad_in);
+                if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                    devicePosition = ExpandableListView.getPackedPositionChild(id);
+                    piecePosition = ExpandableListView.getPackedPositionGroup(id);
+
+
+                } else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+                    piecePosition = ExpandableListView.getPackedPositionGroup(id);
+                    devicePosition = -1;
+                } else {
+                    // nothing
+                }
+
+                return false;
             }
         });
     }
 
     private void refreshView() {
+        expandableListeDevices.setAdapter(devicesController.getDevicesModel().getDeviceListAdapter());
 
+    }
+
+    public  void changeView(){
+
+        if (selected >=0){
+            Device device=devicesController.getDevicesModel().getDevices().get(selected);
+            Context ctx=HousesActivity.getlContext();
+            Intent intent=new Intent(ctx, DeviceDetailActivity.class);
+            intent.putExtra(SELECTEDDEVICE, device.getId());
+            ctx.startActivity(intent);
+        }
     }
 
     @Override
@@ -62,7 +132,8 @@ public class DevicesView implements SmartView,DeviceObserver {
      this.devicesModel.subscribeDeviceObserver((DeviceObserver)this);
     }
 
-    public  void changeView(){
+    @Override
+    public void updateDeviceObserver() {
 
 //        if (position>=0){
 //
@@ -76,7 +147,9 @@ public class DevicesView implements SmartView,DeviceObserver {
     }
 
     @Override
-    public void updateDevice() {
+    public void updateDeviceLightObserver(int parent, int child,boolean ischecked) {
+        int a=5;
 
     }
+
 }

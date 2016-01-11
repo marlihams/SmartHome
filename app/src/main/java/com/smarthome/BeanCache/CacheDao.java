@@ -52,7 +52,12 @@ public abstract class CacheDao<T extends Bean> implements SmartHomeDao<T> {
     public boolean  createOrUpdate(T obj){
 
         List<T> element= deleteOrCreate();
-        element.add(obj);
+        int position=element.indexOf(obj);
+        element.remove(obj);
+        if (position!=-1)
+            element.add(position,obj);
+        else
+            element.add(obj);
       return   cacheManager.addElement(getEntityClass().getName(), gson.toJson(element));
     }
 
