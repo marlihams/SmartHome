@@ -108,6 +108,7 @@ public class Test {
 
             // conso Device 1
         historiqueDao.createOrUpdate(new Historique("01-2015",device1,54));
+        historiqueDao.createOrUpdate(new Historique("01-2015",house1,144));
         historiqueDao.createOrUpdate(new Historique("02-2015",device1,64));
         historiqueDao.createOrUpdate(new Historique("03-2015",device1,23));
         historiqueDao.createOrUpdate(new Historique("04-2015",device1,89));
