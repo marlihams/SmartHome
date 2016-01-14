@@ -16,6 +16,7 @@ import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesController;
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.model.DevicesModelI;
+import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,20 +37,16 @@ public class DevicesView implements SmartView,DeviceObserver {
     private DevicesControllerI devicesController;
     private ImageButton addPiece;
     private ImageButton deletePiece;
-    private int piecePosition;
-    private int devicePosition;
-    public List<Integer> getPosition() {
-        return position;
-    }
+    private int piecePosition=-1;
+    private int devicePosition=-1;
 
-    private List<Integer> position;
-    int selected;
+
+
 
     public DevicesView(DevicesControllerI devicesController,DevicesModelI devicesModel) {
         this.devicesController = devicesController;
         this.devicesModel = devicesModel;
-        this.position = new ArrayList<Integer>();
-        selected=-1;
+
         subscribeObserver();
 
     }
@@ -84,9 +81,15 @@ public class DevicesView implements SmartView,DeviceObserver {
 
         expandableListeDevices.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                int ada = 3;
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,int childPosition, long id) {
+                piecePosition=groupPosition;
+                devicePosition=childPosition;
+
+                changeView(); // display the detail of the device in other activity
+
+
                 return false;
+
             }
         });
         expandableListeDevices.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -118,12 +121,12 @@ public class DevicesView implements SmartView,DeviceObserver {
 
     public  void changeView(){
 
-        if (selected >=0){
-            Device device=devicesController.getDevicesModel().getDevices().get(selected);
-            Context ctx=HousesActivity.getlContext();
-            Intent intent=new Intent(ctx, DeviceDetailActivity.class);
-            intent.putExtra(SELECTEDDEVICE, device.getId());
-            ctx.startActivity(intent);
+        if (piecePosition!=-1 && devicePosition!=-1){
+                Context ctx=DevicesActivity.getlContext();
+                Intent intent=new Intent(DevicesActivity.getlContext(), DeviceDetailActivity.class);
+                int deviceId=devicesController.getDevicesModel().findDeviceIdAdapter(piecePosition,devicePosition);
+                intent.putExtra(SELECTEDDEVICE, deviceId);
+                ctx.startActivity(intent);
         }
     }
 
