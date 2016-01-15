@@ -1,17 +1,22 @@
 package com.smarthome.model;
 
+import android.graphics.Color;
+
 import com.smarthome.BeanCache.DeviceCacheDao;
 import com.smarthome.BeanCache.HistoriqueCacheDao;
 import com.smarthome.android.DeviceDetailActivity;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.Historique;
 import com.smarthome.view.DeviceObserver;
+import com.smarthome.vo.ConsoVO;
+import com.smarthome.vo.PieChartConsoVO;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,7 +40,7 @@ public class DeviceDetailModel implements DeviceDetailModelI {
         deviceCacheDao=new DeviceCacheDao(DeviceDetailActivity.getlContext());
         historiqueCacheDao=new HistoriqueCacheDao(DeviceDetailActivity.getlContext());
         device=deviceCacheDao.findByPkey((Object) deviceId);
-   //     historiques=historiqueCacheDao.getHistoriqueByDevice(deviceId);
+        historiques=historiqueCacheDao.findAllByForeignKey(deviceId,"device_id");
     }
 
     @Override
@@ -68,6 +73,31 @@ public class DeviceDetailModel implements DeviceDetailModelI {
         return historiques;
     }
 
+    @Override
+    public List<PieChartConsoVO> getDeviceConsoVo() {
+
+        List<PieChartConsoVO>consoVOs=new ArrayList<>();
+
+       double consoTotal=0.0;
+        double conso;
+        double inter=0.0;
+    List<Historique> all=getLastConsumptionsByDevice();
+        consoVOs.add(new PieChartConsoVO(all.get(0).getPeriode(),device.getName(),0.0,Color.RED));
+        consoVOs.add(new PieChartConsoVO(all.get(0).getPeriode(),"others device ", 0.0,Color.BLUE));
+        for (Historique histo : all){
+            consoTotal+=histo.getConsommation();
+        }
+        for (Historique histo : all) {
+            conso = histo.getConsommation() / consoTotal;
+            if (histo.getDevice().getId() == device.getId()) {
+                consoVOs.get(0).setConsommation(conso);
+            } else {
+                inter += conso;
+            }
+        }
+            consoVOs.get(1).setConsommation(inter);
+        return consoVOs;
+    }
 
 
     @Override
@@ -77,13 +107,13 @@ public class DeviceDetailModel implements DeviceDetailModelI {
         //récupérer la dernière période pendant laquelle il y a eu des consommations
         List<Historique> all = historiqueCacheDao.findAll();
         DateTime lastPeriod = formatter.parseDateTime(all.get(0).getPeriode());
-        for(int i = 1; i < all.size(); i++) {
+        for(int i = 1,len=all.size(); i < len; i++) {
             if(formatter.parseDateTime(all.get(i).getPeriode()).isBefore(lastPeriod)) {
                 lastPeriod = formatter.parseDateTime(all.get(i).getPeriode());
             }
         }
 
-        for(Historique historique : historiqueCacheDao.findAll()) {
+        for(Historique historique :all) {
             if(historique.getDevice() != null && historique.getPeriode().equals(formatter.print(lastPeriod))){
                 lastConsumptionByDevice.add(historique);
             }

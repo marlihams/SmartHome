@@ -39,7 +39,7 @@ public class HouseDetailModel implements HouseDetailModelI{
         deviceCacheDao=new DeviceCacheDao(HouseDetailActivity.getlContext());
         historiqueCacheDao=new HistoriqueCacheDao(HouseDetailActivity.getlContext());
         house=houseCacheDao.findByPkey((Object)homeId);
-        historiques=historiqueCacheDao.getHistoriqueByHouse(homeId);
+        historiques=historiqueCacheDao.findAllByForeignKey(homeId,"house_id");
         devices=deviceCacheDao.findAllByForeignKey(house.getId(), "house");
     }
 
@@ -95,8 +95,8 @@ public class HouseDetailModel implements HouseDetailModelI{
         }
         allDevices.addAll(devices);
         deviceCacheDao.addElements(allDevices);
-    }
 
+    }
     @Override
     public List<Device> getDevices() {
         return devices;

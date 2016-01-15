@@ -39,6 +39,7 @@ public class DeviceDetailActivity extends  SmartMenuActivity implements SmartHom
     private LinearLayout consodeviceMonthly;
     private LinearLayout consodeviceComparaison;
     private LinearLayout consodeviceChartCircle;
+    private TextView comparisonChartTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,16 @@ public class DeviceDetailActivity extends  SmartMenuActivity implements SmartHom
         deviceName=(EditText)findViewById(R.id.deviceName);
         historiqueDate=(Spinner)findViewById(R.id.conso_device);
         consoPeriode=(TextView)findViewById(R.id.consommation);
+        consodeviceMonthly=(LinearLayout)findViewById(R.id.monthlyConsumptionChart);
+        consodeviceComparaison=(LinearLayout)findViewById(R.id.lastMonthComparisonChart);
+        consodeviceChartCircle=(LinearLayout)findViewById(R.id.lastMonthComparisonChartCircle);
+        comparisonChartTitle=(TextView)findViewById(R.id.comparisonChartTitle);
         // creation controller view model
         initializeMvc();
 
         //getting object from their Ids
         deviceDetailView.initializeWidget(pieceName, deviceName, submit,historiqueDate, consoPeriode, consodeviceMonthly,
-                consodeviceComparaison,consodeviceChartCircle);
+                consodeviceChartCircle,comparisonChartTitle,consodeviceComparaison);
         deviceDetailView.setListener();
 
     }

@@ -29,7 +29,7 @@ public class HousesActivity extends  SmartMenuActivity implements SmartHomeView 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device_detail);
+        setContentView(R.layout.activity_houses);
         super.initialize();
     
         // creation controller view model
