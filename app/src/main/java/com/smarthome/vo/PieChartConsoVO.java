@@ -30,21 +30,16 @@ public class PieChartConsoVO {
         this.mmYear = mmYear;
     }
 
-    public PieChartConsoVO(String mmYear,String name,double conso,int color ){
-        this.name=name;
-        consommation=conso;
-        this.color=color;
+    public PieChartConsoVO(String mmYear, String name, double conso, int color) {
+        this.name = name;
+        consommation = conso;
+        this.color = color;
 
-        this.mmYear=mmYear;
+        this.mmYear = mmYear;
     }
 
     public void setConsommation(Double consommation) {
         this.consommation = consommation;
     }
 
-=======
- * Created by Amstrong on 15/1/2016.
- */
-public class PieChartConsoVO {
->>>>>>> 582535a0ccb9a57eb349e151ca059c79a87280b8
 }
