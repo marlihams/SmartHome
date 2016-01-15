@@ -36,7 +36,14 @@
     <string name="help">Help</string>
     <string name="price">Price kw/h</string>
     <string name="delete">Delete</string>
+
     <string name="title_activity_house_detail">HouseDetailActivity</string>
+    <string name="toggle_turn_on"> on</string>
+    <string name="toggle_turn_off">off </string>
+    <string name="monthlyConsumption">Monthly Consumption </string>
+    <string name="lastMonthConsumption">Last Month Consumption </string>
+
+
 
 
 

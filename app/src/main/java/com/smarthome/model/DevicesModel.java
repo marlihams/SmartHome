@@ -62,8 +62,10 @@ public class DevicesModel implements  DevicesModelI{
     private void initializeAdapter() {
 
         List<String>pieceName=buildPieces();
+
         HashMap<String,List<Boolean>> deviceEtat=buildDeviceEtat(pieceName);
         HashMap<String,List<String>> listdevicesName=buildDevicesName(pieceName);
+
 
         deviceListAdapter=new DeviceListAdapter(DevicesActivity.getlContext(),pieceName,deviceEtat,listdevicesName);
         deviceListAdapter.setDevicesModel(this);
@@ -129,7 +131,7 @@ public class DevicesModel implements  DevicesModelI{
     @Override
     public void notifySwitchObserver(int parent , int child,boolean ischecked) {
         for (int i=0;i<deviceObservers.size();i++){
-            deviceObservers.get(i).updateDeviceLightObserver(parent,child,ischecked);
+            deviceObservers.get(i).updateDeviceLightObserver(parent, child, ischecked);
         }
     }
 
@@ -170,5 +172,20 @@ public class DevicesModel implements  DevicesModelI{
     @Override
     public void updateDevice() {
 
+    }
+    public int findDeviceIdAdapter(int parentPosition,int childPosition){
+
+        String p=deviceListAdapter.getPieceName(parentPosition);
+        String name=deviceListAdapter.getDeviceName(p,childPosition);
+        boolean find=true;
+        int id=0;
+        for (int i=0,len=devices.size();i<len && find;i++){
+
+            if (devices.get(i).getName().equals(name) && devices.get(i).getPieceName().equals(p)){
+                find=false;
+                id=devices.get(i).getId();
+            }
+        }
+        return id;
     }
 }

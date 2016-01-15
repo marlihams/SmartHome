@@ -11,6 +11,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.smarthome.R;
+import com.smarthome.beans.Device;
 
 import java.util.HashMap;
 import java.util.List;
@@ -178,6 +179,16 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
             listSwitch.get(piece).remove(positionChild);
             listPieces.remove(piece);
         }
+
+    public String getPieceName(int parentPosition) {
+        return  listPieces.get(parentPosition);
+    }
+    public String getDeviceName(String p, int childPosition) {
+
+        return listDevices.get(p).get(childPosition);
+    }
+
+    
 
     public void updateState(int parent, int child) {
 

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <include layout="@layout/content_houses" />
+    <include layout="@layout/content_devices_detail" />
 
     <android.support.design.widget.NavigationView android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -20,6 +20,8 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_connexion"
         app:menu="@menu/activity_connexion_drawer" />
+
+
 
 
 

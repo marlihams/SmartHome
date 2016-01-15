@@ -94,14 +94,12 @@ public abstract class CacheDao<T extends Bean> implements SmartHomeDao<T> {
 
             List<T> results=new ArrayList<>();
             for (int i=0,len=elements.size();i<len;i++){
-                if (elements.get(i).getForeignKey(foreignKey).getId()==id)
+                if (elements.get(i).getForeignKey(foreignKey)!=null && elements.get(i).getForeignKey(foreignKey).getId()==id)
                     results.add(elements.get(i));
-
             }
             return results;
         }
-        else return elements;
-
+        else return Collections.EMPTY_LIST;
     }
     public boolean  addElements(List<T> lists){
        delete();

@@ -20,6 +20,10 @@ public interface DevicesModelI {
     public void updateAdapter(Device device);
     public void updateDevice();
     public void notifySwitchObserver(int parent , int child,boolean ischecked);
+    public int findDeviceIdAdapter(int parentPosition,int childPosition);
+
+
+
     public ElectronicManager getElectronicManager();
     public RouteurManager getRouteurManager();
 }

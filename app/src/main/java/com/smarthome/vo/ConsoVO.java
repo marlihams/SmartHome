@@ -11,19 +11,21 @@ import java.text.DecimalFormat;
 /**
  * Created by Amstrong on 10/1/2016.
  */
-public class HouseConsoVO {
+public class ConsoVO {
     private String mmYear;
     private Double consommation;
-    private String houseName;
+    private String name;
 
-    public HouseConsoVO(Historique historique) {
+
+    public ConsoVO(Historique historique,boolean bool) {
         DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("MM-yyyy");
         DecimalFormat decimalFormat = new DecimalFormat("00");
         DateTime date = dateFormatter.parseDateTime(historique.getPeriode());
         mmYear = decimalFormat.format(date.getMonthOfYear())+ "/" + historique.getPeriode().substring(historique.getPeriode().length() - 2);
         consommation = Double.valueOf(historique.getConsommation());
-        houseName = historique.getHouse().getName();
+        name =  bool ? historique.getHouse().getName():historique.getDevice().getName();
     }
+
 
     public String getMmYear() {
         return mmYear;
@@ -33,7 +35,7 @@ public class HouseConsoVO {
         return consommation;
     }
 
-    public String getHouseName() {
-        return houseName;
+    public String getName() {
+        return name;
     }
 }
