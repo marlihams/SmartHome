@@ -47,6 +47,7 @@ public class ElectronicManager {
         handler = hStatus;
 
         receiverThread = new ReceiverThread(h);
+        connect();
     }
 
 

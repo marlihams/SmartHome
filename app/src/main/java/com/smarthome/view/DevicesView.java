@@ -2,27 +2,24 @@ package com.smarthome.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-
 
 import com.smarthome.android.DeviceDetailActivity;
 import com.smarthome.android.DevicesActivity;
 import com.smarthome.android.HousesActivity;
 import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
-import com.smarthome.controller.DevicesController;
 import com.smarthome.controller.DevicesControllerI;
+import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.model.DevicesModelI;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-import com.smarthome.controller.DevicesControllerI;
-import com.smarthome.model.DevicesModelI;
 
 /**
  * Created by Mdiallo on 20/12/2015.
@@ -129,7 +126,7 @@ public class DevicesView implements SmartView,DeviceObserver {
 
     @Override
     public void subscribeObserver() {
-     this.devicesModel.subscribeDeviceObserver((DeviceObserver)this);
+     this.devicesModel.subscribeDeviceObserver((DeviceObserver) this);
     }
 
     @Override
@@ -148,8 +145,40 @@ public class DevicesView implements SmartView,DeviceObserver {
 
     @Override
     public void updateDeviceLightObserver(int parent, int child,boolean ischecked) {
-        int a=5;
 
+        Device device = null;
+        ElectronicManager electronicManager = connectToDeviceByBluetooth(device);
+        if(ischecked) {
+            electronicManager.sendData("o");
+        } else {
+            electronicManager.sendData("f");
+        }
+        electronicManager.close();
+        /*RouteurManager routeurManager = devicesController.getDevicesModel().getRouteurManager();
+        Device device = devicesController.getDevicesModel().getDevices().get(0);
+        routeurManager.connect(device.getAdress());
+        if(ischecked) {
+            routeurManager.sendData("ON");
+        } else {
+           routeurManager.sendData("OFF");
+        }
+        routeurManager.close(device.getAdress());*/
+        devicesController.getDevicesModel().getDeviceListAdapter().updateState(parent, child);
+    }
+
+    private ElectronicManager connectToDeviceByBluetooth(Device device) {
+        final Handler handler = new Handler() {
+            public void handleMessage(Message msg) {
+                String data = msg.getData().getString("receivedData");
+            }
+        };
+
+        final Handler handlerStatus = new Handler() {
+            public void handleMessage(Message msg) {
+            }
+        };
+        //00:15:83:0C:BF:EB
+        return new ElectronicManager(handlerStatus,handler,device.getAdress());
     }
 
 }

@@ -178,4 +178,14 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
             listSwitch.get(piece).remove(positionChild);
             listPieces.remove(piece);
         }
+
+    public void updateState(int parent, int child) {
+
+
+        boolean bool = listSwitch.get(listPieces.get(parent)).get(child);
+
+        listSwitch.get(listPieces.get(parent)).remove(child);
+        listSwitch.get(listPieces.get(parent)).add(child,!bool);
+        notifyDataSetChanged();
+    }
 }

@@ -13,7 +13,7 @@ import com.smarthome.android.UserActivity;
  */
 public  class SmartChangeView {
 
-    public static boolean  bluetooth=false;
+    private static boolean  bluetooth=false;
 
     public static boolean isBluetooth() {
         return bluetooth;

@@ -4,8 +4,10 @@ import com.smarthome.BeanCache.DeviceCacheDao;
 import com.smarthome.BeanCache.HouseCacheDao;
 import com.smarthome.android.DevicesActivity;
 import com.smarthome.beans.Device;
-import com.smarthome.view.DeviceObserver;
 import com.smarthome.beans.House;
+import com.smarthome.electronic.ElectronicManager;
+import com.smarthome.electronic.RouteurManager;
+import com.smarthome.view.DeviceObserver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,17 @@ public class DevicesModel implements  DevicesModelI{
 
     private DeviceListAdapter deviceListAdapter;
     private House house;
+    ElectronicManager electronicManager;
+    @Override
+    public ElectronicManager getElectronicManager() { return electronicManager;
+    }
+
+    private RouteurManager routeurManager;
+
+    @Override
+    public RouteurManager getRouteurManager() {
+        return routeurManager;
+    }
 
     public House getHouse() {
         return house;
@@ -38,10 +51,10 @@ public class DevicesModel implements  DevicesModelI{
         houseCacheDao=new HouseCacheDao(DevicesActivity.getlContext());
         house=houseCacheDao.findByPkey(houseId);
         devices=deviceCacheDao.findAllByForeignKey(houseId, "home_id");
+        devices.get(0).setAdress("20:14:08:05:43:96");
         deviceListAdapter=null;
 //        public DeviceListAdapter(Context context, List<String> listPieces,HashMap<String, List<Boolean>>  listSwitch,
 //                HashMap<String, List<String>> listDevices) {
-
         initializeAdapter();
 
     }
@@ -54,6 +67,7 @@ public class DevicesModel implements  DevicesModelI{
 
         deviceListAdapter=new DeviceListAdapter(DevicesActivity.getlContext(),pieceName,deviceEtat,listdevicesName);
         deviceListAdapter.setDevicesModel(this);
+
 
     }
 
