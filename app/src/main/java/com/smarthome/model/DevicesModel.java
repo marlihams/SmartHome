@@ -173,19 +173,21 @@ public class DevicesModel implements  DevicesModelI{
     public void updateDevice() {
 
     }
-    public int findDeviceIdAdapter(int parentPosition,int childPosition){
+    public Device findDeviceIdAdapter(int parentPosition,int childPosition){
 
         String p=deviceListAdapter.getPieceName(parentPosition);
         String name=deviceListAdapter.getDeviceName(p,childPosition);
         boolean find=true;
         int id=0;
+        int position=-1;
         for (int i=0,len=devices.size();i<len && find;i++){
 
             if (devices.get(i).getName().equals(name) && devices.get(i).getPieceName().equals(p)){
                 find=false;
-                id=devices.get(i).getId();
+               // id=devices.get(i).getId();
+                position=i;
             }
         }
-        return id;
+        return devices.get(position);
     }
 }

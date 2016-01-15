@@ -3,7 +3,6 @@ package com.smarthome.model;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.Historique;
 import com.smarthome.view.DeviceObserver;
-import com.smarthome.vo.ConsoVO;
 import com.smarthome.vo.PieChartConsoVO;
 
 import java.util.List;

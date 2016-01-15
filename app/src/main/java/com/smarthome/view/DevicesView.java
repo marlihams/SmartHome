@@ -11,16 +11,11 @@ import android.widget.ImageButton;
 
 import com.smarthome.android.DeviceDetailActivity;
 import com.smarthome.android.DevicesActivity;
-import com.smarthome.android.HousesActivity;
 import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.model.DevicesModelI;
-import android.content.Intent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Mdiallo on 20/12/2015.
@@ -121,8 +116,9 @@ public class DevicesView implements SmartView,DeviceObserver {
         if (piecePosition!=-1 && devicePosition!=-1){
                 Context ctx=DevicesActivity.getlContext();
                 Intent intent=new Intent(DevicesActivity.getlContext(), DeviceDetailActivity.class);
-                int deviceId=devicesController.getDevicesModel().findDeviceIdAdapter(piecePosition,devicePosition);
-                intent.putExtra(SELECTEDDEVICE, deviceId);
+              //  int deviceId=devicesController.getDevicesModel().findDeviceIdAdapter(piecePosition,devicePosition);
+                intent.putExtra(SELECTEDDEVICE, devicesController.getDevicesModel().
+                        findDeviceIdAdapter(piecePosition,devicePosition).getId());
                 ctx.startActivity(intent);
         }
     }
@@ -149,14 +145,18 @@ public class DevicesView implements SmartView,DeviceObserver {
     @Override
     public void updateDeviceLightObserver(int parent, int child,boolean ischecked) {
 
-        Device device = null;
+        Device device = devicesController.getDevicesModel().findDeviceIdAdapter(parent, child);
         ElectronicManager electronicManager = connectToDeviceByBluetooth(device);
-        if(ischecked) {
+        try { if(ischecked) {
             electronicManager.sendData("o");
         } else {
             electronicManager.sendData("f");
         }
-        electronicManager.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            electronicManager.close();
+        }
         /*RouteurManager routeurManager = devicesController.getDevicesModel().getRouteurManager();
         Device device = devicesController.getDevicesModel().getDevices().get(0);
         routeurManager.connect(device.getAdress());

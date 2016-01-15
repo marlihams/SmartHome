@@ -11,7 +11,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.smarthome.R;
-import com.smarthome.beans.Device;
 
 import java.util.HashMap;
 import java.util.List;

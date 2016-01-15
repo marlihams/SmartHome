@@ -4,9 +4,6 @@ import android.content.Context;
 
 import com.smarthome.beans.Historique;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Mdiallo on 25/12/2015.
  */

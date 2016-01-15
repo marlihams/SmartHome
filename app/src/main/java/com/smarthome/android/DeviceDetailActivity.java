@@ -16,10 +16,7 @@ import com.smarthome.model.DeviceDetailModel;
 import com.smarthome.model.DeviceDetailModelI;
 import com.smarthome.view.DeviceDetailView;
 import com.smarthome.view.DevicesView;
-import com.smarthome.view.HousesView;
 import com.smarthome.view.SmartHomeView;
-
-import java.util.List;
 
 /**
  * Created by Mdiallo on 23/12/2015.

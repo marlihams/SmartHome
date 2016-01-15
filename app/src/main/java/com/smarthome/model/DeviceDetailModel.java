@@ -8,7 +8,6 @@ import com.smarthome.android.DeviceDetailActivity;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.Historique;
 import com.smarthome.view.DeviceObserver;
-import com.smarthome.vo.ConsoVO;
 import com.smarthome.vo.PieChartConsoVO;
 
 import org.joda.time.DateTime;
@@ -16,7 +15,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

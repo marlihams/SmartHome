@@ -56,12 +56,12 @@ public class ElectronicManager {
         return device;
     }
 
-    public void sendData(String data) {
+    public void sendData(String data) throws Exception{
         try {
             sender.write(data.getBytes());
             sender.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new Exception("Sent failed");
         }
     }
 
