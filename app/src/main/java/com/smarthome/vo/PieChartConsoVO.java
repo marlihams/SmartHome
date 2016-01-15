@@ -1,6 +1,7 @@
 package com.smarthome.vo;
 
 /**
+<<<<<<< HEAD
  * Created by Mdiallo on 15/01/2016.
  */
 public class PieChartConsoVO {
@@ -41,4 +42,9 @@ public class PieChartConsoVO {
         this.consommation = consommation;
     }
 
+=======
+ * Created by Amstrong on 15/1/2016.
+ */
+public class PieChartConsoVO {
+>>>>>>> 582535a0ccb9a57eb349e151ca059c79a87280b8
 }
