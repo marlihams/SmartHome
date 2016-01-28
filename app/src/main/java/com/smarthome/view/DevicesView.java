@@ -1,14 +1,26 @@
 package com.smarthome.view;
 
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
+import com.smarthome.R;
 import com.smarthome.android.DeviceDetailActivity;
 import com.smarthome.android.DevicesActivity;
 import com.smarthome.android.SmartAnimation;
@@ -16,6 +28,11 @@ import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.model.DevicesModelI;
+import com.smarthome.vo.BluetoothVO;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Mdiallo on 20/12/2015.
@@ -24,13 +41,34 @@ import com.smarthome.model.DevicesModelI;
 public class DevicesView implements SmartView,DeviceObserver {
 
     public static  final String SELECTEDDEVICE="deviceId";
+    private int selectedElement=-1;
     private ExpandableListView expandableListeDevices;
     private DevicesModelI devicesModel;
     private DevicesControllerI devicesController;
-    private ImageButton addPiece;
-    private ImageButton deletePiece;
+    private ImageButton add;
+    private ImageButton delete;
+    private  ImageButton scanDevice;
+    BluetoothAdapter bdAdapter;
     private int piecePosition=-1;
     private int devicePosition=-1;
+    private View oldView;
+    private List<String>addressMacDevice;
+    SimpleAdapter mdapter;
+    private List<HashMap<String,String>>listeDevices;
+    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // Create a new device item
+                BluetoothVO bluetoothVO=new BluetoothVO(device.getName(),device.getAddress());
+                listeDevices.add(bluetoothVO.getHashMap());
+                mdapter.notifyDataSetChanged();
+            }
+        }
+    };
+
 
 
 
@@ -38,17 +76,28 @@ public class DevicesView implements SmartView,DeviceObserver {
     public DevicesView(DevicesControllerI devicesController,DevicesModelI devicesModel) {
         this.devicesController = devicesController;
         this.devicesModel = devicesModel;
-
+        listeDevices=new ArrayList<HashMap<String,String>>();
+         mdapter=new SimpleAdapter(DevicesActivity.getlContext(),listeDevices,android.R.layout.simple_list_item_2,
+                new String[]{BluetoothVO.KeyNAME,BluetoothVO.KeyADRESS},new int[]{android.R.id.text1,android.R.id.text2});
+        addressMacDevice=new ArrayList<>();
+        initialize();
         subscribeObserver();
 
     }
 
+    private void initialize() {
+       addressMacDevice.clear();
+        for (Device device : devicesController.getDevicesModel().getDevices())
+            if (device.getAdress()!=null)
+                addressMacDevice.add(device.getAdress());
+    }
 
     @Override
     public void initializeWidget(View... views) {
         expandableListeDevices=(ExpandableListView)views[0];
-        addPiece=(ImageButton)views[1];
-        deletePiece=(ImageButton) views[2];
+        add=(ImageButton)views[1];
+        delete=(ImageButton) views[2];
+        scanDevice=(ImageButton)views[3];
         refreshView();
 
     }
@@ -56,26 +105,34 @@ public class DevicesView implements SmartView,DeviceObserver {
     @Override
     public void setListener() {
         SmartAnimation.init(DevicesActivity.getlContext());
-        addPiece.setOnClickListener(new View.OnClickListener() {
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  SmartChangeView.changeView(PiecesActivity.getlContext(),"profil");
+                //  SmartChangeView.changeView(PiecesActivity.getlContext(),"profil");
+                v.startAnimation(SmartAnimation.fad_in);
+                dialogueAddPiece();
+
             }
         });
-        deletePiece.setOnClickListener(new View.OnClickListener() {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.startAnimation(SmartAnimation.fad_in);
-                int a=0;
+
+                try {
+                    devicesController.deleteDevice(piecePosition, devicePosition);
+                } catch (Exception e) {
+                    Toast.makeText(DevicesActivity.getlContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
 
         expandableListeDevices.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,int childPosition, long id) {
-                piecePosition=groupPosition;
-                devicePosition=childPosition;
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                piecePosition = groupPosition;
+                devicePosition = childPosition;
 
                 changeView(); // display the detail of the device in other activity
 
@@ -84,28 +141,152 @@ public class DevicesView implements SmartView,DeviceObserver {
 
             }
         });
+        expandableListeDevices.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (oldView != null)
+                    oldView.setBackgroundResource(R.color.light_theme);
+                if (selectedElement == groupPosition) {
+                    v.setBackgroundResource(R.color.light_theme);
+                    selectedElement = -1;
+                } else {
+                    v.setBackgroundColor(Color.LTGRAY);
+                    selectedElement = groupPosition;
+                }
+                oldView = v;
+                return false;
+            }
+        });
         expandableListeDevices.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                int indiceDevice = -2;
+                int indicePiece = -2;
+                int color = 0;
+
                 int itemType = ExpandableListView.getPackedPositionType(id);
                 view.setAnimation(SmartAnimation.fad_in);
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    devicePosition = ExpandableListView.getPackedPositionChild(id);
-                    piecePosition = ExpandableListView.getPackedPositionGroup(id);
+                    indiceDevice = ExpandableListView.getPackedPositionChild(id);
+                    indicePiece = ExpandableListView.getPackedPositionGroup(id);
 
+                    color = R.color.light_red;
 
                 } else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-                    piecePosition = ExpandableListView.getPackedPositionGroup(id);
-                    devicePosition = -1;
+                    indicePiece = ExpandableListView.getPackedPositionGroup(id);
+                    indiceDevice = -1;
+                    color = R.color.light_theme;
                 } else {
                     // nothing
                 }
 
-                return false;
+                if (oldView != null)
+                    oldView.setBackgroundResource(color);
+
+                if (indiceDevice == devicePosition && indicePiece == piecePosition) {
+                    view.setBackgroundResource(color);
+                } else {
+                    devicePosition = indiceDevice;
+                    piecePosition = indicePiece;
+                    oldView = view;
+                    view.setBackgroundResource(R.color.light_blue);
+                }
+
+                view.startAnimation(SmartAnimation.shake);
+
+                return true;
             }
         });
+
+        scanDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(SmartAnimation.hyperspace_out);
+                bdAdapter = BluetoothAdapter.getDefaultAdapter();
+                if (bdAdapter.isEnabled() && selectedElement != -1) {
+                    //  listeDevices.clear();
+                    DevicesActivity.getlContext().registerReceiver(bReciever, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+                    bdAdapter.startDiscovery();
+                    displayDialogueScan();
+
+                } else {
+
+                    Toast.makeText(DevicesActivity.getlContext(), "activate the bluetooth and selected pieceName", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
     }
 
+    private void dialogueAddPiece() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(DevicesActivity.getlContext());
+        alertDialog.setTitle("add a New Piece");
+        alertDialog.setMessage("Enter  piece name");
+        final EditText input = new EditText(DevicesActivity.getlContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String piece = input.getText().toString();
+                        if (!piece.isEmpty()) {
+                            devicesController.getDevicesModel().getDeviceListAdapter().addItem(piece);
+                            dialog.dismiss();
+                        }
+                    }
+                });
+        alertDialog.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.create();
+        alertDialog.show();
+    }
+
+    private void displayDialogueScan() {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(DevicesActivity.getlContext());
+        dialog.setTitle("list of unknow Device");
+
+        // if button is clicked, close the custom dialog
+        dialog.setNegativeButton(
+                "cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                });
+
+        dialog.setAdapter(
+                mdapter,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        HashMap<String, String> selected = listeDevices.get(which);
+                        // adding a new device
+                        if (!addressMacDevice.contains(selected.get(BluetoothVO.KeyADRESS))) {
+                            devicesController.createNewDevice(selectedElement, selected.get(BluetoothVO.KeyNAME),
+                                    selected.get(BluetoothVO.KeyADRESS));
+                        }
+                        else{
+                            Toast.makeText(DevicesActivity.getlContext(),"that device has already been added",Toast.LENGTH_SHORT).show();
+                        }
+
+                        dialog.dismiss();
+                    }
+                });
+     //   dialog.create();
+        dialog.show();
+    }
     private void refreshView() {
         expandableListeDevices.setAdapter(devicesController.getDevicesModel().getDeviceListAdapter());
 
@@ -130,16 +311,7 @@ public class DevicesView implements SmartView,DeviceObserver {
 
     @Override
     public void updateDeviceObserver() {
-
-//        if (position>=0){
-//
-//            Piece house=devicesController.getPiecesModel().getPieces().get(position);
-//            Context ctx=PiecesActivity.getlContext();
-//            Intent intent=new Intent(ctx, PieceDetailActivity.class);
-//            intent.putExtra(SELECTEDHOUSE,position);
-//            ctx.startActivity(intent);
-
-
+        initialize();
     }
 
     @Override

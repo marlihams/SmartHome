@@ -45,7 +45,12 @@ public class Device extends BeanAbstract{
         this.name=name;
         this.pieceName=pieceName;
     }
+    public Device(String adress,House house,String name) {
 
+        this.house = house;
+        this.name=name;
+        this.adress=adress;
+    }
     public House getHouse() {
         return house;
     }

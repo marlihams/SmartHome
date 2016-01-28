@@ -38,6 +38,16 @@ public class DevicesModel implements  DevicesModelI{
         return routeurManager;
     }
 
+    @Override
+    public void createNewDevice(int positionPiece, String name, String address) {
+        Device device=new Device(name,deviceListAdapter.getPieceName(positionPiece),house,address);
+        deviceCacheDao.createOrUpdate(device);
+        deviceListAdapter.addItem(device.getPieceName(),device.getName(),getEtatDevice(device));
+        devices.add(device);
+        notifyDevicesObserver();
+    }
+
+
     public House getHouse() {
         return house;
     }
@@ -165,6 +175,23 @@ public class DevicesModel implements  DevicesModelI{
     }
 
     @Override
+    public void deleteDevice(int piecePosition, int devicePosition) {
+        if (devicePosition==-1) {
+            // deleting a piece so we delette all the device having inside that pieceName;
+            deviceCacheDao.delete(findDeviceAdapterByPieceName(piecePosition));
+            deviceListAdapter.removeItem(deviceListAdapter.getPieceName(piecePosition));
+
+        }
+        else {
+            deviceCacheDao.delete(findDeviceIdAdapter(piecePosition, devicePosition));
+            deviceListAdapter.removeItem(deviceListAdapter.getPieceName(piecePosition), devicePosition);
+
+        }
+        devices=deviceCacheDao.findAllByForeignKey(house.getId(),"home_id");
+
+    }
+
+    @Override
     public void updateAdapter(Device device) {
 
         deviceListAdapter.addItem(device.getPieceName(),device.getName(),getEtatDevice(device));}
@@ -188,6 +215,22 @@ public class DevicesModel implements  DevicesModelI{
                 position=i;
             }
         }
-        return devices.get(position);
+        return position!=-1 ? devices.get(position):null;
+    }
+    public List<Device> findDeviceAdapterByPieceName(int parentPosition){
+
+        String p=deviceListAdapter.getPieceName(parentPosition);
+        boolean find=true;
+        List<Device>rep=new ArrayList<>();
+        int id=0;
+        int position=-1;
+        for (int i=0,len=devices.size();i<len && find;i++){
+
+            if (devices.get(i).getPieceName().equals(p)){
+                find=false;
+               rep.add(devices.get(i));
+            }
+        }
+        return rep;
     }
 }
