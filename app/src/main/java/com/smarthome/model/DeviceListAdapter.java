@@ -9,8 +9,10 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smarthome.R;
+import com.smarthome.android.DevicesActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +73,7 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
 
         @Override
         public View getChildView(final int groupPosition, final int childPosition,
-                                 boolean isLastChild, View convertView, ViewGroup parent) {
+                                 boolean isLastChild, View convertView, ViewGroup parent){
 
             final String childText = (String) getChild(groupPosition, childPosition);
              final boolean childBool=this.listSwitch.get(this.listPieces.get(groupPosition))
@@ -93,7 +95,11 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                     if (childBool != isChecked) {
-                        devicesModel.notifySwitchObserver(groupPosition, childPosition,isChecked);
+                        try {
+                            devicesModel.notifySwitchObserver(groupPosition, childPosition,isChecked);
+                        } catch (Exception e) {
+                            Toast.makeText(DevicesActivity.getlContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
 

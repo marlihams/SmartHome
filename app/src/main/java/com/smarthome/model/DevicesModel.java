@@ -5,8 +5,6 @@ import com.smarthome.BeanCache.HouseCacheDao;
 import com.smarthome.android.DevicesActivity;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
-import com.smarthome.electronic.ElectronicManager;
-import com.smarthome.electronic.RouteurManager;
 import com.smarthome.view.DeviceObserver;
 
 import java.util.ArrayList;
@@ -26,17 +24,6 @@ public class DevicesModel implements  DevicesModelI{
 
     private DeviceListAdapter deviceListAdapter;
     private House house;
-    ElectronicManager electronicManager;
-    @Override
-    public ElectronicManager getElectronicManager() { return electronicManager;
-    }
-
-    private RouteurManager routeurManager;
-
-    @Override
-    public RouteurManager getRouteurManager() {
-        return routeurManager;
-    }
 
     public House getHouse() {
         return house;
@@ -129,7 +116,7 @@ public class DevicesModel implements  DevicesModelI{
     }
 
     @Override
-    public void notifySwitchObserver(int parent , int child,boolean ischecked) {
+    public void notifySwitchObserver(int parent , int child,boolean ischecked) throws Exception {
         for (int i=0;i<deviceObservers.size();i++){
             deviceObservers.get(i).updateDeviceLightObserver(parent, child, ischecked);
         }
