@@ -1,7 +1,11 @@
 package com.smarthome.android;
 
 
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +28,8 @@ public abstract class SmartMenuActivity extends AppCompatActivity
         DrawerLayout drawer;
         NavigationView navigationView;
         ActionBarDrawerToggle toggle;
+    BluetoothAdapter btAdapter=null;
+    public static int REQUEST_BLUETOOTH = 1;
 
 
     // view property
@@ -69,7 +75,8 @@ public abstract class SmartMenuActivity extends AppCompatActivity
                         SmartChangeView.changeView(lContext,"houses");
                         break;
                     case R.id.bluetooth:
-                        SmartChangeView.setBluetooth(true);
+                        activeBluetooth();
+
                         break;
                     case R.id.routeur: //TODO open the screen config for Routeur
                         SmartChangeView.setBluetooth(false);
@@ -85,6 +92,32 @@ public abstract class SmartMenuActivity extends AppCompatActivity
         });
     }
 
+    private void activeBluetooth() {
+
+         btAdapter = btAdapter==null ? BluetoothAdapter.getDefaultAdapter() :btAdapter;
+
+        // Phone does not support Bluetooth so let the user know and exit.
+        if (btAdapter == null) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Not compatible")
+                    .setMessage("Your phone does not support Bluetooth")
+                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            System.exit(0);
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }else{
+
+            if (!btAdapter.isEnabled()) {
+                Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBT, REQUEST_BLUETOOTH);
+            }
+        }
+
+        SmartChangeView.setBluetooth(true);
+    }
     @Override
     public void onBackPressed(){
 

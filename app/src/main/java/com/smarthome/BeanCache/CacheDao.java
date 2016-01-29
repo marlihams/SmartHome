@@ -110,7 +110,7 @@ public abstract class CacheDao<T extends Bean> implements SmartHomeDao<T> {
     @Override
     public boolean delete(T obj) {
         List<T> element= deleteOrCreate();
-        element.remove(element.indexOf(obj));
+        element.remove(obj);
         return   cacheManager.addElement(getEntityClass().getName(), gson.toJson(element));
     }
     private List<T>deleteOrCreate(){
@@ -127,6 +127,14 @@ public abstract class CacheDao<T extends Bean> implements SmartHomeDao<T> {
         cacheManager.removeElement(getEntityClass().getName());
         return element;
 
+    }
+    public boolean delete(List<T> obj) {
+        List<T> element= deleteOrCreate();
+        if (element.size()>=obj.size()){
+            for (int i=0;i<obj.size();i++)
+                element.remove(obj.get(i));
+        }
+        return   cacheManager.addElement(getEntityClass().getName(), gson.toJson(element));
     }
 
 

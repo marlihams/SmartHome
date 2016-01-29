@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.smarthome.R;
 import com.smarthome.android.DevicesActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -162,6 +163,7 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
         public boolean isChildSelectable(int groupPosition, int childPosition) {
                 return true;
         }
+
     public void addItem(String piece,String name,boolean etat) {
 
         if (!listPieces.contains(piece)) {
@@ -169,12 +171,28 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
         }
         listDevices.get(piece).add(name);
         listSwitch.get(piece).add(etat);
+        notifyDataSetChanged();
+    }
+    public void addItem(int piecePosition,String name,boolean etat) {
+
+        String piece=listPieces.get(piecePosition);
+        listDevices.get(piece).add(name);
+        listSwitch.get(piece).add(etat);
+        notifyDataSetChanged();
+    }
+    public void addItem(String piece){
+        listPieces.add(piece);
+        listDevices.put(piece, new ArrayList<String>());
+        listSwitch.put(piece,new ArrayList<Boolean>());
+        notifyDataSetChanged();
     }
     public void removeItem(String piece){
+
         if (listPieces.contains(piece)) {
             listDevices.get(piece).clear();
             listSwitch.get(piece).clear();
             listPieces.remove(piece);
+            notifyDataSetChanged();
 
         }
     }
@@ -182,7 +200,8 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
 
             listDevices.get(piece).remove(positionChild);
             listSwitch.get(piece).remove(positionChild);
-            listPieces.remove(piece);
+
+            notifyDataSetChanged();
         }
 
     public String getPieceName(int parentPosition) {
@@ -196,7 +215,6 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
     
 
     public void updateState(int parent, int child) {
-
 
         boolean bool = listSwitch.get(listPieces.get(parent)).get(child);
 

@@ -1,6 +1,5 @@
 package com.smarthome.android;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
@@ -9,12 +8,8 @@ import android.widget.TextView;
 
 import com.smarthome.R;
 import com.smarthome.controller.DevicesController;
-
-import com.smarthome.controller.HousesController;
 import com.smarthome.model.DevicesModel;
 import com.smarthome.model.DevicesModelI;
-import com.smarthome.view.DeviceObserver;
-
 import com.smarthome.view.DevicesView;
 import com.smarthome.view.HousesView;
 import com.smarthome.view.SmartHomeView;
@@ -30,6 +25,7 @@ public class DevicesActivity extends  SmartMenuActivity implements SmartHomeView
     private ImageButton addDevice;
     private ImageButton deleteDevice;
     private TextView titleActivity;
+    private  ImageButton scanDevice;
     int houseId;
 
     @Override
@@ -46,13 +42,14 @@ public class DevicesActivity extends  SmartMenuActivity implements SmartHomeView
 
         //getting object from their Ids
         expandableListdevices= (ExpandableListView)findViewById(R.id.list_expandable_device);
+        scanDevice=(ImageButton)findViewById(R.id.scandevice);
         addDevice=(ImageButton)findViewById(R.id.add);
         deleteDevice=(ImageButton)findViewById(R.id.delete);
         titleActivity=(TextView)findViewById(R.id.titleActivity);
         titleActivity.setText("Devices ");
 
         initializeMvc();
-        devicesView.initializeWidget(expandableListdevices, addDevice, deleteDevice);
+        devicesView.initializeWidget(expandableListdevices, addDevice, deleteDevice,scanDevice);
         devicesView.setListener();
     }
 

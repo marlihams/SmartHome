@@ -6,6 +6,9 @@
     <color name="white">#FFFFFF</color>
     <color name="dark_gray">#a9a9a9</color>
     <color name="light_theme">#EEEEEE</color>
+    <color name="light_red">#edeaea</color>
+    <color name="light_blue">#bf7979</color>
+
 
     <!--<color name="black">#000000</color>-->
 

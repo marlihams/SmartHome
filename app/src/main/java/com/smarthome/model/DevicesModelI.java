@@ -2,6 +2,9 @@ package com.smarthome.model;
 
 
 import com.smarthome.beans.Device;
+import com.smarthome.beans.House;
+import com.smarthome.electronic.ElectronicManager;
+import com.smarthome.electronic.RouteurManager;
 import com.smarthome.view.DeviceObserver;
 
 import java.util.List;
@@ -17,6 +20,12 @@ public interface DevicesModelI {
     public DeviceListAdapter getDeviceListAdapter();
     public void updateAdapter(Device device);
     public void updateDevice();
-    public void notifySwitchObserver(int parent , int child,boolean ischecked) throws Exception;
+    public House getHouse();
+    public void notifySwitchObserver(int parent , int child,boolean ischecked);
     public Device findDeviceIdAdapter(int parentPosition,int childPosition);
+
+    
+    public void createNewDevice(int positionPiece, String name, String address);
+
+   public  void deleteDevice(int piecePosition, int devicePosition);
 }

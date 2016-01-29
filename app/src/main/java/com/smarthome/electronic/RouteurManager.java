@@ -1,58 +1,118 @@
 package com.smarthome.electronic;
 
+
+import android.os.AsyncTask;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+
 
 /**
  * Created by Amstrong on 12/1/2016.
  */
-public class RouteurManager implements RouteurManagerI {
+public class RouteurManager  extends AsyncTask<String,Integer, String> implements  RouteurManagerI{
+    private static String PARAMETER="listDevice";
+    private String response;
+    private HandlerRouteur handlerRouteur;
+    private HttpURLConnection aHttpURLConnection;
 
-    private String routeurIpAdress = "192.168.43.91";
 
-    private static String get(String url) throws IOException {
-        String source ="";
-        URL oracle = new URL(url);
-        URLConnection yc = oracle.openConnection();
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(
-                        yc.getInputStream()));
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null)
-            source +=inputLine;
-        in.close();
-        return source;
+    public RouteurManager(HandlerRouteur handlerRouteur) {
+        super();
+        response=null;
+        handlerRouteur=handlerRouteur;
     }
 
-    public void connect(final String adress) {
-        new Thread() {
-            @Override public void run() {
-                try {
-                    get("http://" + routeurIpAdress + "pair.php?adressMac=" + adress);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    /**
+     * excecuting a http request in background
+     * @param params
+     * params[0] :url (http://192.168.43.91/scan.php
+     * params[1]: action
+     * params[2]:key of the request
+     * params[3]:value of the request
+     * @return
+     */
+
+    @Override
+    protected String doInBackground(String... params) {
+
+           if (params[1].equals(PARAMETER)) {
+               excecuteAction(params[0], null, null);
+               return PARAMETER;
+           }
+           else {
+               excecuteAction(params[0], params[1], params[2]);
+               return null;
+           }
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+
+        if (s==null)
+            handlerRouteur.listDeviceOrder();
+        else
+            handlerRouteur.ListDeviceRequest();
+    }
+
+    protected void excecuteAction(String request,String key,String value){
+        if (key!=null && value !=null)
+            runHttpRequest(request + "?" + key + "=" + value);
+        else
+            runHttpRequest(request);
+    }
+
+    public String getResponse() {
+        return response;
+    }
+    private  void setResponse(){
+        response=response;
+    }
+    private void  runHttpRequest(String url){
+        System.setProperty("http.keepAlive","false");
+        BufferedReader aBufferedInputStream = null;
+        try {
+            URL  aURL = new URL(url);
+
+    /* Open a connection to that URL. */
+            aHttpURLConnection = (HttpURLConnection) aURL.openConnection();
+            aHttpURLConnection.setDoOutput(true);
+            aHttpURLConnection.setChunkedStreamingMode(0);
+            aHttpURLConnection.setRequestMethod("GET");
+           // aHttpURLConnection.connect();
+         //   OutputStreamWriter writer=new OutputStreamWriter(aHttpURLConnection.getOutputStream());
+         //   writer.write();
+          //  writer.flush();
+
+    /* Define InputStreams to read from the URLConnection. */
+            aBufferedInputStream =new BufferedReader(new InputStreamReader( aHttpURLConnection.getInputStream(), "UTF-8"));
+
+    /* Read bytes to the Buffer until there is nothing more to read(-1) */
+            //    ByteArrayBuffer aByteArrayBuffer = new ByteArrayBuffer(50);
+
+            String  current="";
+            response="";
+
+            while ((current = aBufferedInputStream.readLine())!=null) {
+                response += current;
             }
-        }.start();
-    }
 
-    public void sendData(String data) {
-        try {
-            get("http://" + routeurIpAdress +"/order.php?order="+data);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
-    }
+        finally {
 
-    public void close(String adress) {
-        try {
-            get("http://" + routeurIpAdress + "unpair.php?adressMac=" + adress);
-        } catch (IOException e) {
-            e.printStackTrace();
+         //   try{ writer.close();}catch (Exception e){};
+            try{ aBufferedInputStream.close();}catch (Exception e){};
+            try{aHttpURLConnection.disconnect();}catch (Exception e){};
+
         }
+
     }
 }
