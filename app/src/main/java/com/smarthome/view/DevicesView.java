@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +14,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -26,11 +30,15 @@ import com.smarthome.android.DevicesActivity;
 import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesControllerI;
+import com.smarthome.electronic.DeviceConnector;
 import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.electronic.HandlerRouteur;
 import com.smarthome.model.DeviceListAdapter;
 import com.smarthome.model.DevicesModelI;
 import com.smarthome.vo.BluetoothVO;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +50,13 @@ import java.util.List;
 
 public class DevicesView implements SmartView,DeviceObserver {
 
+    // Debugging
+    private static final String TAG = "DevicesView";
+    private static final boolean D = true;
+
     public static  final String SELECTEDDEVICE="deviceId";
+    // The amount of time untill cancelling connection request (in milliseconds)
+    private static final long CONNECTION_WAITING_TIME = 10000;
     private int selectedElement=-1;
     private ExpandableListView expandableListeDevices;
     private DevicesModelI devicesModel;
@@ -57,9 +71,16 @@ public class DevicesView implements SmartView,DeviceObserver {
     private List<String>addressMacDevice;
     SimpleAdapter mdapter;
     private List<HashMap<String,String>>listeDevices;
+    // Message types sent from the BluetoothService Handler
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_DEVICE_NAME = 4;
+    public static final int MESSAGE_TOAST = 5;
     private final BroadcastReceiver bReciever = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -71,6 +92,19 @@ public class DevicesView implements SmartView,DeviceObserver {
         }
     };
 
+    // Key names received from the DeviceConnector handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+    private static String MSG_NOT_CONNECTED ="not connected";
+    private static String MSG_CONNECTING = "connecting";
+    private static String MSG_CONNECTED = "connected";
+
+    // Name of the connected device
+    private String connectedDeviceName = null;
+
+
+
+    private static DeviceConnector connector;
 
     public DevicesView(DevicesControllerI devicesController,DevicesModelI devicesModel) {
         this.devicesController = devicesController;
@@ -317,25 +351,49 @@ public class DevicesView implements SmartView,DeviceObserver {
 
     @Override
     public void updateDeviceObserver() {
-        initialize();
+
+//        if (position>=0){
+//
+//            Piece house=devicesController.getPiecesModel().getPieces().get(position);
+//            Context ctx=PiecesActivity.getlContext();
+//            Intent intent=new Intent(ctx, PieceDetailActivity.class);
+//            intent.putExtra(SELECTEDHOUSE,position);
+//            ctx.startActivity(intent);
+
+
     }
 
     @Override
-    public void updateDeviceLightObserver(int parent, int child,boolean ischecked) {
+    public void updateDeviceLightObserver(int parent, int child,boolean ischecked) throws Exception {
 
-//        Device device = devicesController.getDevicesModel().findDeviceIdAdapter(parent, child);
-//        ElectronicManager electronicManager = connectToDeviceByBluetooth(device);
-//        try { if(ischecked) {
-//            electronicManager.sendData("o");
-//        } else {
-//            electronicManager.sendData("f");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            electronicManager.close();
-//        }
-
+        Device device = devicesController.getDevicesModel().findDeviceIdAdapter(parent, child);
+        if(device.getAdress() == null) {
+            throw new Exception("The device must have an adress");
+        }
+        BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.getAdress());
+        if(connector == null) {
+            setupConnector(bluetoothDevice);
+        }
+        try {
+            long beginningTime = System.currentTimeMillis();
+            while(true) {
+                if(isConnected()) {
+                    if(ischecked) {
+                        connector.write("o".getBytes());
+                    } else {
+                        connector.write("f".getBytes());
+                    }
+                    break;
+                }
+                if(System.currentTimeMillis() - beginningTime > CONNECTION_WAITING_TIME) {
+                    throw new Exception("Unable to connect to the device");
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception(e);
+        } finally {
+            stopConnection();
+        }
         /*RouteurManager routeurManager = devicesController.getDevicesModel().getRouteurManager();
         Device device = devicesController.getDevicesModel().getDevices().get(0);
         routeurManager.connect(device.getAdress());
@@ -351,19 +409,99 @@ public class DevicesView implements SmartView,DeviceObserver {
         devicesController.getDevicesModel().getDeviceListAdapter().updateState(parent, child);
     }
 
-    private ElectronicManager connectToDeviceByBluetooth(Device device) {
-        final Handler handler = new Handler() {
-            public void handleMessage(Message msg) {
-                String data = msg.getData().getString("receivedData");
-            }
-        };
+    final Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case MESSAGE_STATE_CHANGE:
 
-        final Handler handlerStatus = new Handler() {
-            public void handleMessage(Message msg) {
+                        Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                        switch (msg.arg1) {
+                            case DeviceConnector.STATE_CONNECTED:
+                                Log.d(TAG, MSG_CONNECTED);
+                                break;
+                            case DeviceConnector.STATE_CONNECTING:
+                                Log.d(TAG, MSG_CONNECTING);
+                                break;
+                            case DeviceConnector.STATE_NONE:
+                                Log.d(TAG, MSG_NOT_CONNECTED);
+                                break;
+                        }
+                        break;
+
+                    case MESSAGE_READ:
+                        final String readMessage = (String) msg.obj;
+                        if (readMessage != null) {
+                            Log.d(TAG, "MESSAGE READ " + readMessage);
+                        }
+                        break;
+
+                    case MESSAGE_DEVICE_NAME:
+                        final String deviceName = (String) msg.obj;
+                        if (deviceName != null) {
+                            Log.d(TAG, DEVICE_NAME + " " + deviceName);
+                        }
+                        break;
+
+                    case MESSAGE_WRITE:
+                        // stub
+                        break;
+
+                    case MESSAGE_TOAST:
+                        final String message = (String) msg.obj;
+                        if(message != null) {
+                            Log.d(TAG, TOAST);
+                        }
+                        break;
+                    default:
+                        Log.d(TAG, "what:" + msg.what + " arg1:" + msg.arg1 + " obj:" + (String)msg.obj);
+                        break;
+                }
             }
-        };
-        //00:15:83:0C:BF:EB
-        return new ElectronicManager(handlerStatus,handler,device.getAdress());
+
+    };
+
+    private void setupConnector(BluetoothDevice connectedDevice) {
+        stopConnection();
+        try {
+            connector = new DeviceConnector(connectedDevice, mHandler);
+            connector.connect();
+        } catch (IllegalArgumentException e) {
+            Log.d(TAG, "setupConnector failed: " + e.getMessage());
+        }
     }
 
+    private void stopConnection() {
+        if (connector != null) {
+            connector.stop();
+            connector = null;
+        }
+    }
+
+    public static BluetoothSocket createRfcommSocket(BluetoothDevice device) {
+        BluetoothSocket tmp = null;
+        try {
+            Class class1 = device.getClass();
+            Class aclass[] = new Class[1];
+            aclass[0] = Integer.TYPE;
+            Method method = class1.getMethod("createRfcommSocket", aclass);
+            Object aobj[] = new Object[1];
+            aobj[0] = Integer.valueOf(1);
+
+            tmp = (BluetoothSocket) method.invoke(device, aobj);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
+        }
+        return tmp;
+    }
+
+    private boolean isConnected() {
+        return (connector != null) && (connector.getState() == DeviceConnector.STATE_CONNECTED);
+    }
 }

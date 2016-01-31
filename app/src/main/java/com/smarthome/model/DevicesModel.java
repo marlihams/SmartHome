@@ -146,7 +146,7 @@ public class DevicesModel implements  DevicesModelI{
     }
 
     @Override
-    public void notifySwitchObserver(int parent , int child,boolean ischecked) {
+    public void notifySwitchObserver(int parent , int child,boolean ischecked) throws Exception {
         for (int i=0;i<deviceObservers.size();i++){
             deviceObservers.get(i).updateDeviceLightObserver(parent, child, ischecked);
         }

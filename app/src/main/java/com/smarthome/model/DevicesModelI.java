@@ -21,7 +21,7 @@ public interface DevicesModelI {
     public void updateAdapter(Device device);
     public void updateDevice();
     public House getHouse();
-    public void notifySwitchObserver(int parent , int child,boolean ischecked);
+    public void notifySwitchObserver(int parent , int child,boolean ischecked)throws Exception;
     public Device findDeviceIdAdapter(int parentPosition,int childPosition);
 
 

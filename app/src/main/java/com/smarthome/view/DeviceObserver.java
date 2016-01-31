@@ -5,5 +5,5 @@ package com.smarthome.view;
  */
 public interface DeviceObserver {
     void updateDeviceObserver();
-    void updateDeviceLightObserver(int parent ,int child,boolean ischecked);
+    void updateDeviceLightObserver(int parent ,int child,boolean ischecked) throws Exception;
 }
