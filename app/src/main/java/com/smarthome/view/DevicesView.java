@@ -3,10 +3,8 @@ package com.smarthome.view;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,7 +29,6 @@ import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.electronic.DeviceConnector;
-import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.electronic.HandlerRouteur;
 import com.smarthome.model.DeviceListAdapter;
 import com.smarthome.model.DevicesModelI;
@@ -39,7 +36,6 @@ import com.smarthome.vo.BluetoothVO;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
