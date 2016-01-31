@@ -6,7 +6,7 @@ import com.smarthome.android.DevicesActivity;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
 import com.smarthome.electronic.ElectronicManager;
-import com.smarthome.electronic.RouteurManager;
+import com.smarthome.electronic.HandlerRouteur;
 import com.smarthome.view.DeviceObserver;
 
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ public class DevicesModel implements  DevicesModelI{
     public ElectronicManager getElectronicManager() { return electronicManager;
     }
 
-    private RouteurManager routeurManager;
+    private HandlerRouteur handleRouteur;
 
     @Override
-    public RouteurManager getRouteurManager() {
-        return routeurManager;
+    public HandlerRouteur getHandleRouteur() {
+        return handleRouteur;
     }
 
     @Override
@@ -61,7 +61,8 @@ public class DevicesModel implements  DevicesModelI{
         houseCacheDao=new HouseCacheDao(DevicesActivity.getlContext());
         house=houseCacheDao.findByPkey(houseId);
         devices=deviceCacheDao.findAllByForeignKey(houseId, "home_id");
-        devices.get(0).setAdress("20:14:08:05:43:96");
+        if (!devices.isEmpty())
+             devices.get(0).setAdress("20:14:08:05:43:96");
         deviceListAdapter=null;
 //        public DeviceListAdapter(Context context, List<String> listPieces,HashMap<String, List<Boolean>>  listSwitch,
 //                HashMap<String, List<String>> listDevices) {
@@ -75,9 +76,14 @@ public class DevicesModel implements  DevicesModelI{
 
         HashMap<String,List<Boolean>> deviceEtat=buildDeviceEtat(pieceName);
         HashMap<String,List<String>> listdevicesName=buildDevicesName(pieceName);
-
-
+//        pieceName=null;
+//        listdevicesName=null;
+//        deviceEtat=null;
+        if (pieceName.isEmpty() || deviceEtat.isEmpty() || listdevicesName.isEmpty())
+            deviceListAdapter=new DeviceListAdapter(DevicesActivity.getlContext());
+        else
         deviceListAdapter=new DeviceListAdapter(DevicesActivity.getlContext(),pieceName,deviceEtat,listdevicesName);
+
         deviceListAdapter.setDevicesModel(this);
 
 
@@ -124,7 +130,8 @@ public class DevicesModel implements  DevicesModelI{
 
         //TODO communicate with the device to see if it is on or off
         int a=(int)(Math.random()*(10));
-        return a<=5? false:true;
+        //return a<=5? false:true;
+        return false;
     }
 
     private List<String> buildPieces() {
@@ -159,7 +166,6 @@ public class DevicesModel implements  DevicesModelI{
         }
 
     }
-
 
     public List<Device> getDevices() {
         return devices;

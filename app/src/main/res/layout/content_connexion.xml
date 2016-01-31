@@ -15,39 +15,38 @@
         android:layout_height="wrap_content"
         android:background="@drawable/profil_acceuil"
         android:id="@+id/profil_acceuil"
-
-        android:layout_marginTop="130dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="104dp"
-        android:layout_marginStart="104dp" />
+        android:layout_above="@+id/profilText"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/profil"
         android:id="@+id/profilText"
-        android:layout_marginLeft="110dp"
-        android:layout_below="@+id/profil_acceuil"
-         />
+        android:layout_marginBottom="65dp"
+        android:layout_above="@+id/home_acceuil"
+        android:layout_centerHorizontal="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/home_acceuil"
         android:id="@+id/home_acceuil"
-        android:layout_below="@+id/profilText"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="54dp"
-        android:layout_marginEnd="54dp" />
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"
+
+
+        />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/houses"
         android:id="@+id/homeText"
+
         android:layout_below="@+id/home_acceuil"
         android:layout_alignLeft="@+id/home_acceuil"
         android:layout_alignStart="@+id/home_acceuil" />
@@ -60,8 +59,8 @@
 
         android:layout_marginTop="48dp"
         android:layout_below="@+id/homeText"
-        android:layout_alignLeft="@+id/profilText"
-        android:layout_alignStart="@+id/profilText" />
+        android:layout_alignLeft="@+id/profil_acceuil"
+        android:layout_alignStart="@+id/profil_acceuil" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -71,6 +70,26 @@
         android:layout_below="@+id/device_acceuil"
         android:layout_alignLeft="@+id/device_acceuil"
         android:layout_alignStart="@+id/device_acceuil" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/preference"
+        android:id="@+id/home_preference"
+        android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_alignTop="@+id/home_acceuil"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/preference"
+        android:id="@+id/preferenceText"
+        android:layout_below="@+id/home_preference"
+        android:layout_marginLeft="40dp"
+       />
 
 
 </RelativeLayout>

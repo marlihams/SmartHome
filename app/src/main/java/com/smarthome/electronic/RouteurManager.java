@@ -2,9 +2,11 @@ package com.smarthome.electronic;
 
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -24,7 +26,7 @@ public class RouteurManager  extends AsyncTask<String,Integer, String> implement
     public RouteurManager(HandlerRouteur handlerRouteur) {
         super();
         response=null;
-        handlerRouteur=handlerRouteur;
+        this.handlerRouteur=handlerRouteur;
     }
 
     /**
@@ -52,7 +54,7 @@ public class RouteurManager  extends AsyncTask<String,Integer, String> implement
 
     @Override
     protected void onPostExecute(String s) {
-
+            String a=this.response;
         if (s==null)
             handlerRouteur.listDeviceOrder();
         else
@@ -69,7 +71,7 @@ public class RouteurManager  extends AsyncTask<String,Integer, String> implement
     public String getResponse() {
         return response;
     }
-    private  void setResponse(){
+    public  void setResponse(String response){
         response=response;
     }
     private void  runHttpRequest(String url){
@@ -80,25 +82,28 @@ public class RouteurManager  extends AsyncTask<String,Integer, String> implement
 
     /* Open a connection to that URL. */
             aHttpURLConnection = (HttpURLConnection) aURL.openConnection();
-            aHttpURLConnection.setDoOutput(true);
+            aHttpURLConnection.setDoOutput(false);
             aHttpURLConnection.setChunkedStreamingMode(0);
             aHttpURLConnection.setRequestMethod("GET");
-           // aHttpURLConnection.connect();
-         //   OutputStreamWriter writer=new OutputStreamWriter(aHttpURLConnection.getOutputStream());
-         //   writer.write();
-          //  writer.flush();
+            aHttpURLConnection.connect();
+//            OutputStreamWriter writer=new OutputStreamWriter(aHttpURLConnection.getOutputStream());
+//            writer.write("");
+//            writer.flush();
+
 
     /* Define InputStreams to read from the URLConnection. */
-            aBufferedInputStream =new BufferedReader(new InputStreamReader( aHttpURLConnection.getInputStream(), "UTF-8"));
+           InputStream is= aHttpURLConnection.getInputStream();
+            aBufferedInputStream =new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
     /* Read bytes to the Buffer until there is nothing more to read(-1) */
             //    ByteArrayBuffer aByteArrayBuffer = new ByteArrayBuffer(50);
 
             String  current="";
-            response="";
+            this.response="";
+            Log.d("****RUN******",response);
 
             while ((current = aBufferedInputStream.readLine())!=null) {
-                response += current;
+                this.response += current;
             }
 
         } catch (MalformedURLException e1) {

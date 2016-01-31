@@ -4,7 +4,7 @@ package com.smarthome.model;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
 import com.smarthome.electronic.ElectronicManager;
-import com.smarthome.electronic.RouteurManager;
+import com.smarthome.electronic.HandlerRouteur;
 import com.smarthome.view.DeviceObserver;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public interface DevicesModelI {
 
 
     public ElectronicManager getElectronicManager();
-    public RouteurManager getRouteurManager();
+    public HandlerRouteur getHandleRouteur();
 
     public void createNewDevice(int positionPiece, String name, String address);
 

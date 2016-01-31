@@ -1,6 +1,5 @@
 package com.smarthome.android;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import com.smarthome.controller.AcceuilController;
 import com.smarthome.controller.AcceuilControllerI;
 import com.smarthome.view.AcceuilView;
 import com.smarthome.view.HousesView;
+import com.smarthome.view.SmartChangeView;
 import com.smarthome.view.SmartHomeView;
 
 public class AcceuilActivity extends SmartMenuActivity implements SmartHomeView {
@@ -21,6 +21,7 @@ public class AcceuilActivity extends SmartMenuActivity implements SmartHomeView 
         private ImageButton profil;
         private ImageButton homes;
         private ImageButton devices;
+        private  ImageButton preferences;
         int houseId;
 
 
@@ -41,13 +42,19 @@ public class AcceuilActivity extends SmartMenuActivity implements SmartHomeView 
 
         Intent intent=getIntent();
         houseId=intent.getIntExtra(HousesView.SELECTEDHOUSE,0);
+        if (houseId==0)
+            houseId=SmartChangeView.getHouseId();
+        else
+           SmartChangeView.setHouseId(houseId);
+
 
          profil=(ImageButton)findViewById(R.id.profil_acceuil);
          homes=(ImageButton)findViewById(R.id.home_acceuil);
          devices=(ImageButton)findViewById(R.id.device_acceuil);
+        preferences=(ImageButton)findViewById(R.id.home_preference);
 
         initializeMvc();
-        acceuilView.initializeWidget(profil, homes, devices);
+        acceuilView.initializeWidget(profil, homes, devices,preferences);
         acceuilView.setListener();
         acceuilView.setHouseId(houseId);
 

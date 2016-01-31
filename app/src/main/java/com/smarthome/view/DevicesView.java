@@ -27,6 +27,8 @@ import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.electronic.ElectronicManager;
+import com.smarthome.electronic.HandlerRouteur;
+import com.smarthome.model.DeviceListAdapter;
 import com.smarthome.model.DevicesModelI;
 import com.smarthome.vo.BluetoothVO;
 
@@ -68,9 +70,6 @@ public class DevicesView implements SmartView,DeviceObserver {
             }
         }
     };
-
-
-
 
 
     public DevicesView(DevicesControllerI devicesController,DevicesModelI devicesModel) {
@@ -288,7 +287,14 @@ public class DevicesView implements SmartView,DeviceObserver {
         dialog.show();
     }
     private void refreshView() {
-        expandableListeDevices.setAdapter(devicesController.getDevicesModel().getDeviceListAdapter());
+        DeviceListAdapter adapter=devicesController.getDevicesModel().getDeviceListAdapter();
+     //   adapter=null;
+        expandableListeDevices.setAdapter(adapter);
+        if (adapter.getListPieces().isEmpty())
+            Toast.makeText(DevicesActivity.getlContext(),"No device has been found",Toast.LENGTH_LONG).show();
+        else{
+            expandableListeDevices.setAdapter(devicesController.getDevicesModel().getDeviceListAdapter());
+        }
 
     }
 
@@ -317,18 +323,19 @@ public class DevicesView implements SmartView,DeviceObserver {
     @Override
     public void updateDeviceLightObserver(int parent, int child,boolean ischecked) {
 
-        Device device = devicesController.getDevicesModel().findDeviceIdAdapter(parent, child);
-        ElectronicManager electronicManager = connectToDeviceByBluetooth(device);
-        try { if(ischecked) {
-            electronicManager.sendData("o");
-        } else {
-            electronicManager.sendData("f");
-        }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            electronicManager.close();
-        }
+//        Device device = devicesController.getDevicesModel().findDeviceIdAdapter(parent, child);
+//        ElectronicManager electronicManager = connectToDeviceByBluetooth(device);
+//        try { if(ischecked) {
+//            electronicManager.sendData("o");
+//        } else {
+//            electronicManager.sendData("f");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            electronicManager.close();
+//        }
+
         /*RouteurManager routeurManager = devicesController.getDevicesModel().getRouteurManager();
         Device device = devicesController.getDevicesModel().getDevices().get(0);
         routeurManager.connect(device.getAdress());
@@ -338,6 +345,9 @@ public class DevicesView implements SmartView,DeviceObserver {
            routeurManager.sendData("OFF");
         }
         routeurManager.close(device.getAdress());*/
+        String address="192.168.43.91";
+        HandlerRouteur handlerRouteur=new HandlerRouteur(DevicesActivity.getlContext(),address);
+        handlerRouteur.getListDevices();
         devicesController.getDevicesModel().getDeviceListAdapter().updateState(parent, child);
     }
 
