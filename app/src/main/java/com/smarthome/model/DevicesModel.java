@@ -119,7 +119,7 @@ public class DevicesModel implements  DevicesModelI{
         for (int i=0,len=devices.size();i<len;i++){
             deviceName=devices.get(i).getPieceName();
              etat=deviceEtat.get(deviceName);
-                etat.add(getEtatDevice(devices.get(i)));
+                etat.add(devices.get(i).isLight());
             deviceEtat.put(deviceName,etat);
         }
             return deviceEtat;
@@ -200,7 +200,7 @@ public class DevicesModel implements  DevicesModelI{
     @Override
     public void updateAdapter(Device device) {
 
-        deviceListAdapter.addItem(device.getPieceName(),device.getName(),getEtatDevice(device));}
+        deviceListAdapter.addItem(device.getPieceName(),device.getName(),device.isLight());}
 
     @Override
     public void updateDevice() {

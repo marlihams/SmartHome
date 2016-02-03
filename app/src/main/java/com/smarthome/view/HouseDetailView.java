@@ -60,6 +60,7 @@ public class HouseDetailView implements SmartView,HouseObserver {
     private LinearLayout monthlyConsumption;
     private LinearLayout lasMonthComparisonChart;
     private TextView comparisonChartTitle;
+    private EditText routeur;
 
     public HouseDetailView(HouseDetailControllerI houseDetailController,HouseDetailModelI houseDetailModel) {
         this.houseDetailController = houseDetailController;
@@ -80,6 +81,7 @@ public class HouseDetailView implements SmartView,HouseObserver {
         historiqueDate=(Spinner)views[6];
         consoPeriode=(TextView)views[7];
         submit=(ImageButton)views[8];
+        routeur=(EditText)views[9];
         monthlyConsumption =(LinearLayout)views[9];
         lasMonthComparisonChart = (LinearLayout)views[10];
         comparisonChartTitle = (TextView) views[11];

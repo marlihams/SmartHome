@@ -40,6 +40,7 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
     private LinearLayout monthlyConsumptionChart;
     private LinearLayout lastMonthComparisonChart;
     private TextView comparisonChartTitle;
+    private EditText routeur;
 
 
     @Override
@@ -63,13 +64,16 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
         historiqueDate=(Spinner)findViewById(R.id.conso_date);
         consoPeriode=(TextView)findViewById(R.id.consommation);
         submit=(ImageButton)findViewById(R.id.submit);
+        routeur=(EditText)findViewById(R.id.router_address);
         monthlyConsumptionChart =(LinearLayout)findViewById(R.id.monthlyConsumptionChart);
         lastMonthComparisonChart =(LinearLayout)findViewById(R.id.lastMonthComparisonChart);
         comparisonChartTitle = (TextView) findViewById(R.id.comparisonChartTitle);
         //getting object from their Ids
 
         initializeMvc();
-        houseDetailView.initializeWidget(houseName, houseAddress, nbDevice, nbBroke, nbTurnOff, nbTurnOn, historiqueDate, consoPeriode, submit, monthlyConsumptionChart, lastMonthComparisonChart, comparisonChartTitle);
+        houseDetailView.initializeWidget(houseName, houseAddress, nbDevice, nbBroke, nbTurnOff, nbTurnOn,
+                historiqueDate, consoPeriode, submit, monthlyConsumptionChart, lastMonthComparisonChart,
+                comparisonChartTitle,routeur);
 
         houseDetailView.setListener();
 
