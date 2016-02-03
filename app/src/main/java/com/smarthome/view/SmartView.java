@@ -7,6 +7,6 @@ import android.view.View;
  */
 public interface SmartView {
     void initializeWidget(View... views);
-    void setListener();
+    void setListener() throws Exception;
     void subscribeObserver();
 }

@@ -9,6 +9,10 @@ import com.smarthome.view.SmartView;
  */
 public class DevicesController implements DevicesControllerI {
 
+    // Debugging
+    private static final String TAG = "DevicesController";
+    private static final boolean D = true;
+
     private DevicesView devicesView;
     private DevicesModelI devicesModel;
 
@@ -26,7 +30,7 @@ public class DevicesController implements DevicesControllerI {
     }
 
     @Override
-    public void createNewDevice(int positionPiece,String name, String address) {
+    public void createNewDevice(int positionPiece,String name, String address) throws Exception {
 
         devicesModel.createNewDevice(positionPiece,name,address);
     }
@@ -45,5 +49,4 @@ public class DevicesController implements DevicesControllerI {
     public SmartView getView() {
         return devicesView;
     }
-
 }

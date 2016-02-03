@@ -4,9 +4,6 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,12 +27,9 @@ import com.smarthome.android.DevicesActivity;
 import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesControllerI;
-import com.smarthome.electronic.DeviceConnector;
+import com.smarthome.electronic.Const;
 import com.smarthome.model.DevicesModelI;
 import com.smarthome.vo.BluetoothVO;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,9 +45,30 @@ public class DevicesView implements SmartView,DeviceObserver {
     private static final String TAG = "DevicesView";
     private static final boolean D = true;
 
+    private String readMessage = null;
+    final Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+
+                case Const.MESSAGE_READ:
+                    readMessage = (String) msg.obj;
+                    Log.d(TAG, "Message read from inputstream:" + readMessage);
+                    devicesController.getDevicesModel().stopConnection();
+                    break;
+
+                case Const.MESSAGE_TOAST:
+                    final String message = (String) msg.obj;
+                    if(message != null) {
+                        Log.d(TAG, Const.TOAST);
+                    }
+                    break;
+            }
+        }
+
+    };
+
     public static  final String SELECTEDDEVICE="deviceId";
-    // The amount of time untill cancelling connection request (in milliseconds)
-    private static final long CONNECTION_WAITING_TIME = 10000;
+
     private int selectedElement=-1;
     private ExpandableListView expandableListeDevices;
     private DevicesModelI devicesModel;
@@ -68,16 +83,10 @@ public class DevicesView implements SmartView,DeviceObserver {
     private List<String>addressMacDevice;
     SimpleAdapter mdapter;
     private List<HashMap<String,String>>listeDevices;
+
     private final BroadcastReceiver bReciever = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-
-    // Message types sent from the BluetoothService Handler
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Create a new device item
@@ -87,20 +96,6 @@ public class DevicesView implements SmartView,DeviceObserver {
             }
         }
     };
-
-    // Key names received from the DeviceConnector handler
-    public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
-    private static String MSG_NOT_CONNECTED ="not connected";
-    private static String MSG_CONNECTING = "connecting";
-    private static String MSG_CONNECTED = "connected";
-
-    // Name of the connected device
-    private String connectedDeviceName = null;
-
-
-
-    private static DeviceConnector connector;
 
     public DevicesView(DevicesControllerI devicesController,DevicesModelI devicesModel) {
         this.devicesController = devicesController;
@@ -236,16 +231,91 @@ public class DevicesView implements SmartView,DeviceObserver {
                     //  listeDevices.clear();
                     DevicesActivity.getlContext().registerReceiver(bReciever, new IntentFilter(BluetoothDevice.ACTION_FOUND));
                     bdAdapter.startDiscovery();
-                    displayDialogueScan();
+                    try {
+                        displayDialogueScan();
+                    } catch (Exception e) {
+                        Toast.makeText(DevicesActivity.getlContext(), "activate the bluetooth and selected pieceName", Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
-
                     Toast.makeText(DevicesActivity.getlContext(), "activate the bluetooth and selected pieceName", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
 
+    }
+
+    private void dialogueAddPiece() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(DevicesActivity.getlContext());
+        alertDialog.setTitle("add a New Piece");
+        alertDialog.setMessage("Enter  piece name");
+        final EditText input = new EditText(DevicesActivity.getlContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String piece = input.getText().toString();
+                        if (!piece.isEmpty()) {
+                            devicesController.getDevicesModel().getDeviceListAdapter().addItem(piece);
+                            dialog.dismiss();
+                        }
+                    }
+                });
+        alertDialog.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.create();
+        alertDialog.show();
+    }
+
+    private void displayDialogueScan() throws Exception{
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(DevicesActivity.getlContext());
+        dialog.setTitle("list of unknow Device");
+
+        // if button is clicked, close the custom dialog
+        dialog.setNegativeButton(
+                "cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                });
+
+        dialog.setAdapter(
+                mdapter,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        HashMap<String, String> selected = listeDevices.get(which);
+                        // adding a new device
+                        if (!addressMacDevice.contains(selected.get(BluetoothVO.KeyADRESS))) {
+                            try {
+                                devicesController.createNewDevice(selectedElement, selected.get(BluetoothVO.KeyNAME),
+                                        selected.get(BluetoothVO.KeyADRESS));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(DevicesActivity.getlContext(), "that device has already been added", Toast.LENGTH_SHORT).show();
+                        }
+
+                        dialog.dismiss();
+                    }
+                });
+        //   dialog.create();
+        dialog.show();
     }
 
     private void refreshView() {
@@ -260,7 +330,7 @@ public class DevicesView implements SmartView,DeviceObserver {
                 Intent intent=new Intent(DevicesActivity.getlContext(), DeviceDetailActivity.class);
               //  int deviceId=devicesController.getDevicesModel().findDeviceIdAdapter(piecePosition,devicePosition);
                 intent.putExtra(SELECTEDDEVICE, devicesController.getDevicesModel().
-                        findDeviceIdAdapter(piecePosition,devicePosition).getId());
+                        findDeviceIdAdapter(piecePosition, devicePosition).getId());
                 ctx.startActivity(intent);
         }
     }
@@ -291,30 +361,30 @@ public class DevicesView implements SmartView,DeviceObserver {
         if(device.getAdress() == null) {
             throw new Exception("The device must have an adress");
         }
-        BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.getAdress());
-        if(connector == null) {
-            setupConnector(bluetoothDevice);
+        if(devicesController.getDevicesModel().getConnector() == null) {
+            BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.getAdress());
+            devicesController.getDevicesModel().setupConnector(bluetoothDevice, mHandler);
         }
         try {
             long beginningTime = System.currentTimeMillis();
             while(true) {
-                if(isConnected()) {
+                if(devicesController.getDevicesModel().isConnected()) {
                     if(ischecked) {
-                        connector.write("o".getBytes());
+                        devicesController.getDevicesModel().getConnector().write("o".getBytes());
                     } else {
-                        connector.write("f".getBytes());
+                        devicesController.getDevicesModel().getConnector().write("f".getBytes());
                     }
                     break;
                 }
-                if(System.currentTimeMillis() - beginningTime > CONNECTION_WAITING_TIME) {
+                if(System.currentTimeMillis() - beginningTime > Const.CONNECTION_WAITING_TIME) {
                     throw new Exception("Unable to connect to the device");
                 }
             }
         } catch (Exception e) {
+            devicesController.getDevicesModel().stopConnection();
             throw new Exception(e);
-        } finally {
-            stopConnection();
         }
+        devicesController.getDevicesModel().getDeviceListAdapter().updateState(parent, child);
         /*RouteurManager routeurManager = devicesController.getDevicesModel().getRouteurManager();
         Device device = devicesController.getDevicesModel().getDevices().get(0);
         routeurManager.connect(device.getAdress());
@@ -324,102 +394,6 @@ public class DevicesView implements SmartView,DeviceObserver {
            routeurManager.sendData("OFF");
         }
         routeurManager.close(device.getAdress());*/
-        devicesController.getDevicesModel().getDeviceListAdapter().updateState(parent, child);
-    }
 
-    final Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case MESSAGE_STATE_CHANGE:
-
-                        Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                        switch (msg.arg1) {
-                            case DeviceConnector.STATE_CONNECTED:
-                                Log.d(TAG, MSG_CONNECTED);
-                                break;
-                            case DeviceConnector.STATE_CONNECTING:
-                                Log.d(TAG, MSG_CONNECTING);
-                                break;
-                            case DeviceConnector.STATE_NONE:
-                                Log.d(TAG, MSG_NOT_CONNECTED);
-                                break;
-                        }
-                        break;
-
-                    case MESSAGE_READ:
-                        final String readMessage = (String) msg.obj;
-                        if (readMessage != null) {
-                            Log.d(TAG, "MESSAGE READ " + readMessage);
-                        }
-                        break;
-
-                    case MESSAGE_DEVICE_NAME:
-                        final String deviceName = (String) msg.obj;
-                        if (deviceName != null) {
-                            Log.d(TAG, DEVICE_NAME + " " + deviceName);
-                        }
-                        break;
-
-                    case MESSAGE_WRITE:
-                        // stub
-                        break;
-
-                    case MESSAGE_TOAST:
-                        final String message = (String) msg.obj;
-                        if(message != null) {
-                            Log.d(TAG, TOAST);
-                        }
-                        break;
-                    default:
-                        Log.d(TAG, "what:" + msg.what + " arg1:" + msg.arg1 + " obj:" + (String)msg.obj);
-                        break;
-                }
-            }
-
-    };
-
-    private void setupConnector(BluetoothDevice connectedDevice) {
-        stopConnection();
-        try {
-            connector = new DeviceConnector(connectedDevice, mHandler);
-            connector.connect();
-        } catch (IllegalArgumentException e) {
-            Log.d(TAG, "setupConnector failed: " + e.getMessage());
-        }
-    }
-
-    private void stopConnection() {
-        if (connector != null) {
-            connector.stop();
-            connector = null;
-        }
-    }
-
-    public static BluetoothSocket createRfcommSocket(BluetoothDevice device) {
-        BluetoothSocket tmp = null;
-        try {
-            Class class1 = device.getClass();
-            Class aclass[] = new Class[1];
-            aclass[0] = Integer.TYPE;
-            Method method = class1.getMethod("createRfcommSocket", aclass);
-            Object aobj[] = new Object[1];
-            aobj[0] = Integer.valueOf(1);
-
-            tmp = (BluetoothSocket) method.invoke(device, aobj);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
-        }
-        return tmp;
-    }
-
-    private boolean isConnected() {
-        return (connector != null) && (connector.getState() == DeviceConnector.STATE_CONNECTED);
     }
 }

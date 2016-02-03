@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smarthome.R;
 import com.smarthome.controller.DevicesController;
@@ -48,13 +49,17 @@ public class DevicesActivity extends  SmartMenuActivity implements SmartHomeView
         titleActivity=(TextView)findViewById(R.id.titleActivity);
         titleActivity.setText("Devices ");
 
-        initializeMvc();
+        try {
+            initializeMvc();
+        } catch (Exception e) {
+            Toast.makeText(getlContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
         devicesView.initializeWidget(expandableListdevices, addDevice, deleteDevice,scanDevice);
         devicesView.setListener();
     }
 
     @Override
-    public void initializeMvc() {
+    public void initializeMvc() throws Exception{
         DevicesModelI devicesModel=new DevicesModel(houseId);
         DevicesController devicesController=new DevicesController(devicesModel);
         devicesView= (DevicesView)((DevicesController)devicesController).getView();

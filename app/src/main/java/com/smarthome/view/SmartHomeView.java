@@ -5,6 +5,6 @@ package com.smarthome.view;
  */
 
 public interface SmartHomeView {
-    public  void initializeMvc();
+    public  void initializeMvc() throws Exception;
   //  public void test();
 }
