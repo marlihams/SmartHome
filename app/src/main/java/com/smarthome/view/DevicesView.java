@@ -3,6 +3,8 @@ package com.smarthome.view;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,9 +30,14 @@ import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
 import com.smarthome.controller.DevicesControllerI;
 import com.smarthome.electronic.Const;
+import com.smarthome.electronic.DeviceConnector;
+import com.smarthome.electronic.HandlerRouteur;
+import com.smarthome.model.DeviceListAdapter;
 import com.smarthome.model.DevicesModelI;
 import com.smarthome.vo.BluetoothVO;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -238,6 +245,7 @@ public class DevicesView implements SmartView,DeviceObserver {
                     }
 
                 } else {
+
                     Toast.makeText(DevicesActivity.getlContext(), "activate the bluetooth and selected pieceName", Toast.LENGTH_SHORT).show();
                 }
 
@@ -277,7 +285,7 @@ public class DevicesView implements SmartView,DeviceObserver {
         alertDialog.show();
     }
 
-    private void displayDialogueScan() throws Exception{
+    private void displayDialogueScan() {
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(DevicesActivity.getlContext());
         dialog.setTitle("list of unknow Device");
@@ -301,25 +309,28 @@ public class DevicesView implements SmartView,DeviceObserver {
                         HashMap<String, String> selected = listeDevices.get(which);
                         // adding a new device
                         if (!addressMacDevice.contains(selected.get(BluetoothVO.KeyADRESS))) {
-                            try {
-                                devicesController.createNewDevice(selectedElement, selected.get(BluetoothVO.KeyNAME),
-                                        selected.get(BluetoothVO.KeyADRESS));
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Toast.makeText(DevicesActivity.getlContext(), "that device has already been added", Toast.LENGTH_SHORT).show();
+                            devicesController.createNewDevice(selectedElement, selected.get(BluetoothVO.KeyNAME),
+                                    selected.get(BluetoothVO.KeyADRESS));
+                        }
+                        else{
+                            Toast.makeText(DevicesActivity.getlContext(),"that device has already been added",Toast.LENGTH_SHORT).show();
                         }
 
                         dialog.dismiss();
                     }
                 });
-        //   dialog.create();
+     //   dialog.create();
         dialog.show();
     }
-
     private void refreshView() {
-        expandableListeDevices.setAdapter(devicesController.getDevicesModel().getDeviceListAdapter());
+        DeviceListAdapter adapter=devicesController.getDevicesModel().getDeviceListAdapter();
+     //   adapter=null;
+        expandableListeDevices.setAdapter(adapter);
+        if (adapter.getListPieces().isEmpty())
+            Toast.makeText(DevicesActivity.getlContext(),"No device has been found",Toast.LENGTH_LONG).show();
+        else{
+            expandableListeDevices.setAdapter(devicesController.getDevicesModel().getDeviceListAdapter());
+        }
 
     }
 
@@ -330,7 +341,7 @@ public class DevicesView implements SmartView,DeviceObserver {
                 Intent intent=new Intent(DevicesActivity.getlContext(), DeviceDetailActivity.class);
               //  int deviceId=devicesController.getDevicesModel().findDeviceIdAdapter(piecePosition,devicePosition);
                 intent.putExtra(SELECTEDDEVICE, devicesController.getDevicesModel().
-                        findDeviceIdAdapter(piecePosition, devicePosition).getId());
+                        findDeviceIdAdapter(piecePosition,devicePosition).getId());
                 ctx.startActivity(intent);
         }
     }
@@ -384,7 +395,6 @@ public class DevicesView implements SmartView,DeviceObserver {
             devicesController.getDevicesModel().stopConnection();
             throw new Exception(e);
         }
-        devicesController.getDevicesModel().getDeviceListAdapter().updateState(parent, child);
         /*RouteurManager routeurManager = devicesController.getDevicesModel().getRouteurManager();
         Device device = devicesController.getDevicesModel().getDevices().get(0);
         routeurManager.connect(device.getAdress());
@@ -394,6 +404,11 @@ public class DevicesView implements SmartView,DeviceObserver {
            routeurManager.sendData("OFF");
         }
         routeurManager.close(device.getAdress());*/
+        String address="192.168.43.91";
+        HandlerRouteur handlerRouteur=new HandlerRouteur(DevicesActivity.getlContext(),address);
+        handlerRouteur.getListDevices();
+        devicesController.getDevicesModel().getDeviceListAdapter().updateState(parent, child);
+    }
 
     }
 }

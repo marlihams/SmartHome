@@ -19,6 +19,18 @@ public class House extends BeanAbstract{
     @Expose
     @DatabaseField(columnName = "house_address")
     private String address;
+
+    public String getRouter() {
+        return router;
+    }
+
+    public void setRouter(String router) {
+        this.router = router;
+    }
+
+    @Expose
+    @DatabaseField
+    private String router;
     @Expose
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true)
     private User user;

@@ -6,6 +6,8 @@ import android.os.Handler;
 
 import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
+import com.smarthome.electronic.ElectronicManager;
+import com.smarthome.electronic.HandlerRouteur;
 import com.smarthome.electronic.DeviceConnector;
 import com.smarthome.view.DeviceObserver;
 

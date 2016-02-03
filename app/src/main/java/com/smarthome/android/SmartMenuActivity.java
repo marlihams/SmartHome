@@ -76,10 +76,12 @@ public abstract class SmartMenuActivity extends AppCompatActivity
                         break;
                     case R.id.bluetooth:
                         activeBluetooth();
+                        SmartChangeView.setBluetooth(true);
 
                         break;
-                    case R.id.routeur: //TODO open the screen config for Routeur
+                    case R.id.routeur:
                         SmartChangeView.setBluetooth(false);
+
                         break;
                     default:
                         break;
@@ -116,7 +118,7 @@ public abstract class SmartMenuActivity extends AppCompatActivity
             }
         }
 
-        SmartChangeView.setBluetooth(true);
+
     }
     @Override
     public void onBackPressed(){

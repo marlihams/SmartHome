@@ -1,6 +1,7 @@
 package com.smarthome.electronic;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 
 /**
  * Created by Mdiallo on 28/01/2016.
@@ -11,6 +12,7 @@ public class HandlerRouteur {
     private static String PAIR="pair.php";
     private static String  UNPAIR="unpair.php";
     private static String ORDER="order.php";
+    private static Context lcontext;
 
 
     private String action;
@@ -20,24 +22,11 @@ public class HandlerRouteur {
     private String addressDevice;
     private String order;
 
-    public String getOrder() {
-        return order;
-    }
 
-    public void setOrder(String order) {
-        this.order = order;
-    }
+    public HandlerRouteur(Context ctx,String addressHouse) {
+        lcontext=ctx;
+  //      this.bar = new ProgressDialog(ctx);
 
-    public String getAddressDevice() {
-        return addressDevice;
-    }
-
-    public void setAddressDevice(String addressDevice) {
-        this.addressDevice = addressDevice;
-    }
-
-    public HandlerRouteur(ProgressDialog bar,String addressHouse) {
-        this.bar = bar;
         this.addressHouse=addressHouse;
     }
 
@@ -47,7 +36,10 @@ public class HandlerRouteur {
     }
 
     public  void getListDevices(){
+        this.bar=ProgressDialog.show(lcontext,"please wait...","contating server distant...",true);
+        this.bar.setCancelable(true);
         RouteurManager routeurManager=new RouteurManager(this);
+        this.routeurManager=routeurManager;
         String[] params=new String[5];
         params[0]=QUERY+addressHouse+"/"+SCAN;
         params[1]="listDevice";
@@ -56,6 +48,7 @@ public class HandlerRouteur {
     protected    void pairDevice(){
 
         RouteurManager routeurManager=new RouteurManager(this);
+        this.routeurManager=routeurManager;
         String[] params=new String[5];
         params[0]=QUERY+addressHouse+"/"+PAIR;
         params[1]="";
@@ -66,6 +59,7 @@ public class HandlerRouteur {
 
     protected  void unpairDevice(){
         RouteurManager routeurManager=new RouteurManager(this);
+        this.routeurManager=routeurManager;
         String[] params=new String[5];
         params[0]=QUERY+addressHouse+"/"+UNPAIR;
         params[1]="";
@@ -75,6 +69,7 @@ public class HandlerRouteur {
     }
     public void orderDevice(){
         RouteurManager routeurManager=new RouteurManager(this);
+        this.routeurManager=routeurManager;
         String[] params=new String[5];
         params[0]=QUERY+addressHouse+"/"+ORDER;
         params[1]="";
@@ -101,8 +96,11 @@ public class HandlerRouteur {
 
 
     public void ListDeviceRequest() {
-        if (bar.isShowing())
+//        if (bar.isShowing())
             bar.dismiss();
+
+        String response=routeurManager.getResponse();
+        String a="slt";
     //
 
     }
@@ -128,6 +126,22 @@ public class HandlerRouteur {
                  bar.dismiss();
          }
     }
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
+    public String getAddressDevice() {
+        return addressDevice;
+    }
+
+    public void setAddressDevice(String addressDevice) {
+        this.addressDevice = addressDevice;
+    }
+
 
 
 }

@@ -24,6 +24,28 @@ public class Device extends BeanAbstract{
     @Expose
     @DatabaseField
     private String adress;
+    @Expose
+    @DatabaseField
+    private String power;
+    @Expose
+    private boolean light;
+
+    public String getPower() {
+        return power;
+    }
+
+    public void setPower(String power) {
+        this.power = power;
+    }
+
+    public boolean isLight() {
+        return light;
+    }
+
+    public void setLight(boolean light) {
+        this.light = light;
+    }
+
 
     public String getAdress() {
         return adress;
@@ -50,6 +72,13 @@ public class Device extends BeanAbstract{
         this.house = house;
         this.name=name;
         this.adress=adress;
+    }
+    public Device(String adress,House house,String name,boolean etat) {
+
+        this.house = house;
+        this.name=name;
+        this.adress=adress;
+        this.light=etat;
     }
     public House getHouse() {
         return house;

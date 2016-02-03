@@ -40,6 +40,7 @@ public class HousesView implements SmartView,HouseObserver {
 
 
 
+
     public List<Integer> getPosition() {
         return position;
     }

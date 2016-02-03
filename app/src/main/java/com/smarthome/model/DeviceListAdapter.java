@@ -60,6 +60,14 @@ public class DeviceListAdapter extends BaseExpandableListAdapter {
             this.listSwitch=listSwitch;
 
         }
+    public DeviceListAdapter(Context context) {
+        this.context = context;
+        this.listPieces = new ArrayList<>();
+        this.listDevices = new HashMap<>();
+        this.listSwitch=new HashMap<>();
+
+    }
+
 
         @Override
         public Object getChild(int groupPosition, int childPosititon) {
