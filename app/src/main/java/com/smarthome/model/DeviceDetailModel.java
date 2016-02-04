@@ -38,7 +38,8 @@ public class DeviceDetailModel implements DeviceDetailModelI {
         deviceCacheDao=new DeviceCacheDao(DeviceDetailActivity.getlContext());
         historiqueCacheDao=new HistoriqueCacheDao(DeviceDetailActivity.getlContext());
         device=deviceCacheDao.findByPkey((Object) deviceId);
-        historiques=historiqueCacheDao.findAllByForeignKey(deviceId,"device_id");
+        historiques=historiqueCacheDao.findAllByForeignKey(deviceId, "device_id");
+        device.setAdress("20:14:08:05:43:96");
     }
 
     @Override

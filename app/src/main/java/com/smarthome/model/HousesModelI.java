@@ -1,6 +1,7 @@
 package com.smarthome.model;
 
 
+import com.smarthome.BeanCache.DeviceCacheDao;
 import com.smarthome.beans.House;
 import com.smarthome.view.HouseObserver;
 
@@ -12,6 +13,9 @@ import java.util.List;
 public interface  HousesModelI {
 
     public List<House> getHouses();
+
+    DeviceCacheDao getDeviceCacheDao();
+
     public void subscribeHouseObserver(HouseObserver observer);
     public void notifyHouseObserver();
     public HomeAdapter getAdapter();

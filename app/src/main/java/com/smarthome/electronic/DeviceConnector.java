@@ -12,7 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.smarthome.model.DevicesModel;
+import com.smarthome.view.BluetoothUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -191,7 +191,7 @@ public class DeviceConnector {
         public ConnectThread(BluetoothDevice device) {
             if (D) Log.d(TAG, "create ConnectThread");
             mmDevice = device;
-            mmSocket = DevicesModel.createRfcommSocket(mmDevice);
+            mmSocket = BluetoothUtils.createRfcommSocket(mmDevice);
         }
         // ==========================================================================
 

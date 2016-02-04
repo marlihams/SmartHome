@@ -1,10 +1,11 @@
 package com.smarthome.model;
 
+import com.smarthome.BeanCache.DeviceCacheDao;
 import com.smarthome.BeanCache.HouseCacheDao;
+import com.smarthome.android.HouseDetailActivity;
 import com.smarthome.android.HousesActivity;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
-import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.view.HouseObserver;
 
 import java.util.ArrayList;
@@ -17,11 +18,11 @@ import java.util.Locale;
  */
 public class HousesModel  implements  HousesModelI{
 
+    private final DeviceCacheDao deviceCacheDao;
     private  List<House> houses;
     private List<HouseObserver> houseObservers=new ArrayList<HouseObserver>();
 
     private HouseCacheDao houseCacheDao;
-    private ElectronicManager electronicManager;
     private List<Device> devices;
     private HomeAdapter adapter;
     private   List<String> conso;
@@ -40,12 +41,18 @@ public class HousesModel  implements  HousesModelI{
         houseCacheDao=new HouseCacheDao(HousesActivity.getlContext());
          houses= houseCacheDao.findAll();
         initializeAdapter();
+        deviceCacheDao=new DeviceCacheDao(HouseDetailActivity.getlContext());
 
     }
 
     @Override
     public List<House> getHouses(){
         return  houses;
+    }
+
+    @Override
+    public DeviceCacheDao getDeviceCacheDao() {
+        return deviceCacheDao;
     }
 
     @Override

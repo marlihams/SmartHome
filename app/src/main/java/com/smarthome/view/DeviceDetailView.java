@@ -1,16 +1,20 @@
 package com.smarthome.view;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.smarthome.android.DeviceDetailActivity;
 import com.smarthome.android.DevicesActivity;
@@ -18,6 +22,7 @@ import com.smarthome.android.SmartAnimation;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.Historique;
 import com.smarthome.controller.DeviceDetailControllerI;
+import com.smarthome.electronic.Const;
 import com.smarthome.model.DeviceDetailModelI;
 import com.smarthome.vo.ConsoVO;
 import com.smarthome.vo.PieChartConsoVO;
@@ -42,7 +47,11 @@ import java.util.Locale;
  * Created by Mdiallo on 20/12/2015.
  */
 
-public class DeviceDetailView implements SmartView,DeviceObserver {
+public class DeviceDetailView extends BluetoothUtils implements SmartView,DeviceObserver {
+
+    // Debugging
+    private static final String TAG = "DevicesView";
+    private static final boolean D = true;
 
     private static int NB_MONTHS_TO_DISPLAY = 6;
     public static String SELECTEDdevice="selecteddevice";
@@ -55,9 +64,32 @@ public class DeviceDetailView implements SmartView,DeviceObserver {
     private ImageButton  submit;
     private TextView  consoPeriode;
     private LinearLayout consodeviceMonthly;
-   private LinearLayout consodeviceComparaison;
+    private LinearLayout consodeviceComparaison;
     private LinearLayout consodeviceChartCircle;
     private TextView comparisonChartTitle;
+    private ToggleButton on_off;
+
+    /*private String readMessage = null;
+    final Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+
+                case Const.MESSAGE_READ:
+                    readMessage = (String) msg.obj;
+                    if(D) Log.d(TAG, "Message read from inputstream:" + readMessage);
+                    stopConnection();
+                    break;
+
+                case Const.MESSAGE_TOAST:
+                    final String message = (String) msg.obj;
+                    if(message != null) {
+                        if(D) Log.d(TAG, Const.TOAST);
+                    }
+                    break;
+            }
+        }
+
+    };*/
 
     public DeviceDetailView(DeviceDetailControllerI deviceDetailController, DeviceDetailModelI deviceDetailModel) {
         this.deviceDetailController = deviceDetailController;
@@ -79,6 +111,7 @@ public class DeviceDetailView implements SmartView,DeviceObserver {
         consodeviceChartCircle = (LinearLayout) views[6];
         comparisonChartTitle=(TextView)views[7];
         consodeviceComparaison = (LinearLayout)views[8];
+        on_off=(ToggleButton)views[9];
         displayWidgetContent();
     }
 
@@ -111,6 +144,38 @@ public class DeviceDetailView implements SmartView,DeviceObserver {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 //do Nothing
+            }
+        });
+        on_off.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Device device = deviceDetailController.getDeviceDetailModel().getDevice();
+                if(device.getAdress() != null) {
+                    if(getConnector() == null) {
+                        BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.getAdress());
+                        setupConnector(bluetoothDevice, mHandler);
+                    }
+                    try {
+                        long beginningTime = System.currentTimeMillis();
+                        while(true) {
+                            if(isConnected()) {
+                                if(isChecked) {
+                                    getConnector().write("o".getBytes());
+                                } else {
+                                    getConnector().write("f".getBytes());
+                                }
+                                break;
+                            }
+                            if(System.currentTimeMillis() - beginningTime > Const.CONNECTION_WAITING_TIME) {
+                                throw new Exception("Unable to connect to the device");
+                            }
+                        }
+                    } catch (Exception e) {
+                        stopConnection();
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }

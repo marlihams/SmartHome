@@ -75,16 +75,15 @@ public class HouseDetailView implements SmartView,HouseObserver {
         houseName=(EditText)views[0];
         houseAddress=(EditText)views[1];
         nbDevice=(TextView)views[2];
-        nbBroke=(TextView)views[3];
-        nbTurnOff=(TextView)views[4];
-        nbTurnOn=(TextView)views[5];
-        historiqueDate=(Spinner)views[6];
-        consoPeriode=(TextView)views[7];
-        submit=(ImageButton)views[8];
-        routeur=(EditText)views[9];
-        monthlyConsumption =(LinearLayout)views[9];
-        lasMonthComparisonChart = (LinearLayout)views[10];
-        comparisonChartTitle = (TextView) views[11];
+        nbTurnOff=(TextView)views[3];
+        nbTurnOn=(TextView)views[4];
+        historiqueDate=(Spinner)views[5];
+        consoPeriode=(TextView)views[6];
+        submit=(ImageButton)views[7];
+        monthlyConsumption =(LinearLayout)views[8];
+        lasMonthComparisonChart = (LinearLayout)views[9];
+        comparisonChartTitle = (TextView) views[10];
+        routeur=(EditText)views[11];
         displayWidgetContent();
     }
 

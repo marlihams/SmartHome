@@ -58,7 +58,6 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
         houseName=(EditText)findViewById(R.id.house_name);
         houseAddress=(EditText)findViewById(R.id.house_address);
         nbDevice=(TextView)findViewById(R.id.nb_device);
-        nbBroke=(TextView)findViewById(R.id.device_broke);
         nbTurnOn=(TextView)findViewById(R.id.device_turnon);
         nbTurnOff=(TextView)findViewById(R.id.device_turnoff);
         historiqueDate=(Spinner)findViewById(R.id.conso_date);
@@ -71,7 +70,7 @@ public class HouseDetailActivity extends SmartMenuActivity implements SmartHomeV
         //getting object from their Ids
 
         initializeMvc();
-        houseDetailView.initializeWidget(houseName, houseAddress, nbDevice, nbBroke, nbTurnOff, nbTurnOn,
+        houseDetailView.initializeWidget(houseName, houseAddress, nbDevice, nbTurnOff, nbTurnOn,
                 historiqueDate, consoPeriode, submit, monthlyConsumptionChart, lastMonthComparisonChart,
                 comparisonChartTitle,routeur);
 

@@ -1,10 +1,13 @@
 package com.smarthome.view;
 
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,8 +18,10 @@ import com.smarthome.R;
 import com.smarthome.android.HouseDetailActivity;
 import com.smarthome.android.HousesActivity;
 import com.smarthome.android.SmartAnimation;
+import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
 import com.smarthome.controller.HousesControllerI;
+import com.smarthome.electronic.Const;
 import com.smarthome.model.HousesModelI;
 import com.smarthome.model.RecyclerItemClickListener;
 
@@ -27,7 +32,11 @@ import java.util.List;
  * Created by Mdiallo on 20/12/2015.
  */
 
-public class HousesView implements SmartView,HouseObserver {
+public class HousesView extends BluetoothUtils implements SmartView,HouseObserver {
+
+    // Debugging
+    private static final String TAG = "HousesView";
+    private static final boolean D = true;
 
     public static String SELECTEDHOUSE="houseId";
     private RecyclerView listeHouses;
@@ -140,7 +149,7 @@ public class HousesView implements SmartView,HouseObserver {
 
     @Override
     public void subscribeObserver() {
-        housesModel.subscribeHouseObserver((HouseObserver)this);
+        housesModel.subscribeHouseObserver((HouseObserver) this);
     }
 
     public  void changeView(){
@@ -191,5 +200,46 @@ public class HousesView implements SmartView,HouseObserver {
             }
         });
          dialog.show();
+    }
+
+    List<String> setHousesConso() {
+        List<String> consos = new ArrayList<>();
+        for (House house : housesController.getHousesModel().getHouses()) {
+            List<Device> devices = housesController.getHousesModel().getDeviceCacheDao().findAllByForeignKey(house.getId(), "house");
+            long sommeConso = 0;
+            for(Device device : devices) {
+                sommeConso += getConsoDevice(device);
+            }
+            consos.add(String.valueOf(sommeConso));
+        }
+        return consos;
+    }
+
+    Long getConsoDevice(Device device) {
+            if(getConnector() == null) {
+                BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.getAdress());
+                setupConnector(bluetoothDevice, mHandler);
+            }
+            try {
+                long beginningTime = System.currentTimeMillis();
+                while(true) {
+                    if(isConnected()) {
+                        getConnector().write("c".getBytes());
+                        break;
+                    }
+                    if(System.currentTimeMillis() - beginningTime > Const.CONNECTION_WAITING_TIME) {
+                        throw new Exception("Unable to connect to the device");
+                    }
+                }
+                while(getReadMessage() == null) {
+                    if(D) Log.d(TAG, "Still nothing..");
+                }
+                return Long.parseLong(getReadMessage());
+            } catch (Exception e) {
+                stopConnection();
+                if(D) Log.e(TAG, e.getMessage());
+                e.printStackTrace();
+                return null;
+            }
     }
 }

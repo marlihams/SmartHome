@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.smarthome.R;
 import com.smarthome.controller.DeviceDetailController;
@@ -32,11 +33,13 @@ public class DeviceDetailActivity extends  SmartMenuActivity implements SmartHom
     private Spinner historiqueDate;
     private TextView  consoPeriode;
     private ImageButton submit;
+    private ToggleButton on_off;
 
     private LinearLayout consodeviceMonthly;
     private LinearLayout consodeviceComparaison;
     private LinearLayout consodeviceChartCircle;
     private TextView comparisonChartTitle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class DeviceDetailActivity extends  SmartMenuActivity implements SmartHom
         submit=(ImageButton)findViewById(R.id.submit);
         deviceName=(EditText)findViewById(R.id.deviceName);
         historiqueDate=(Spinner)findViewById(R.id.conso_device);
+        on_off=(ToggleButton)findViewById(R.id.on_off);
         consoPeriode=(TextView)findViewById(R.id.consommation);
         consodeviceMonthly=(LinearLayout)findViewById(R.id.monthlyConsumptionChart);
         consodeviceComparaison=(LinearLayout)findViewById(R.id.lastMonthComparisonChart);
@@ -61,7 +65,7 @@ public class DeviceDetailActivity extends  SmartMenuActivity implements SmartHom
 
         //getting object from their Ids
         deviceDetailView.initializeWidget(pieceName, deviceName, submit,historiqueDate, consoPeriode, consodeviceMonthly,
-                consodeviceChartCircle,comparisonChartTitle,consodeviceComparaison);
+                consodeviceChartCircle,comparisonChartTitle,consodeviceComparaison,on_off);
         deviceDetailView.setListener();
 
     }

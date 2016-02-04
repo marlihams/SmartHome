@@ -1,26 +1,13 @@
 package com.smarthome.model;
 
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-
 import com.smarthome.BeanCache.DeviceCacheDao;
 import com.smarthome.BeanCache.HouseCacheDao;
 import com.smarthome.android.DevicesActivity;
 import com.smarthome.beans.Device;
 import com.smarthome.beans.House;
-import com.smarthome.electronic.ElectronicManager;
 import com.smarthome.electronic.HandlerRouteur;
-import com.smarthome.electronic.Const;
-import com.smarthome.electronic.DeviceConnector;
 import com.smarthome.view.DeviceObserver;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +17,6 @@ import java.util.List;
  */
 public class DevicesModel implements  DevicesModelI{
 
-    // Debugging
-    private static final String TAG = "DevicesModel";
-    private static final boolean D = true;
-
     private  List<Device> devices;
     private DeviceCacheDao deviceCacheDao;
     private HouseCacheDao houseCacheDao;
@@ -42,30 +25,6 @@ public class DevicesModel implements  DevicesModelI{
 
     private DeviceListAdapter deviceListAdapter;
     private House house;
-
-    private DeviceConnector connector;
-
-    private String readMessage = null;
-    final Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-
-                case Const.MESSAGE_READ:
-                    readMessage = (String) msg.obj;
-                    Log.d(TAG, "Message read from inputstream:" + readMessage);
-                    stopConnection();
-                    break;
-
-                case Const.MESSAGE_TOAST:
-                    final String message = (String) msg.obj;
-                    if(message != null) {
-                        Log.d(TAG, Const.TOAST);
-                    }
-                    break;
-            }
-        }
-
-    };
     
     private HandlerRouteur handleRouteur;
 
@@ -75,11 +34,10 @@ public class DevicesModel implements  DevicesModelI{
     }
 
     @Override
-    public void createNewDevice(int positionPiece, String name, String address) {
     public void createNewDevice(int positionPiece, String name, String address) throws Exception{
         Device device=new Device(name,deviceListAdapter.getPieceName(positionPiece),house,address);
         deviceCacheDao.createOrUpdate(device);
-        deviceListAdapter.addItem(device.getPieceName(),device.getName(),getEtatDevice(device));
+        deviceListAdapter.addItem(device.getPieceName(),device.getName(),device.isLight());
         devices.add(device);
         notifyDevicesObserver();
     }
@@ -103,11 +61,11 @@ public class DevicesModel implements  DevicesModelI{
         deviceListAdapter=null;
 //        public DeviceListAdapter(Context context, List<String> listPieces,HashMap<String, List<Boolean>>  listSwitch,
 //                HashMap<String, List<String>> listDevices) {
-        initializeAdapter();
 
     }
 
-    private void initializeAdapter() throws Exception{
+    @Override
+    public void initializeAdapter() throws Exception{
 
         List<String>pieceName=buildPieces();
 
@@ -161,55 +119,6 @@ public class DevicesModel implements  DevicesModelI{
             return deviceEtat;
 
     }
-
-    private Boolean getEtatDevice(Device device) {
-
-
-    private Boolean getEtatDevice(Device device) throws Exception{
-
-        if(device.getAdress() != null) {
-            if(connector == null) {
-                BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.getAdress());
-                setupConnector(bluetoothDevice, mHandler);
-            }
-            try {
-                long beginningTime = System.currentTimeMillis();
-                while(true) {
-                    if(isConnected()) {
-                        connector.write("e".getBytes());
-                        //connector.stopConnectThread();
-                        break;
-                    }
-                    if(System.currentTimeMillis() - beginningTime > Const.CONNECTION_WAITING_TIME) {
-                        throw new Exception("Unable to connect to the device");
-                    }
-                }
-                beginningTime = System.currentTimeMillis();
-                while(readMessage == null) {
-                    if(System.currentTimeMillis() - beginningTime > Const.DATA_RECEIVING_WAITING_TIME) {
-                        throw new Exception("Timeout: unable to receive data from device " + device.getAdress());
-                    }
-                }
-                if("1".equals(readMessage)){
-                    return true;
-                } else if("0".equals(readMessage)) {
-                    return false;
-                } else {
-                    throw new Exception("Unknown character " + readMessage + " received from device " + device.getAdress());
-                }
-            } catch (Exception e) {
-                stopConnection();
-                throw new Exception(e);
-            } finally {
-                if(readMessage != null) {
-                    readMessage = null;
-                }
-            }
-        } else {
-            return false;
-        }
-    }
-
     private List<String> buildPieces() {
         List<String> pieceName=new ArrayList<String>();
         String n;
@@ -222,7 +131,7 @@ public class DevicesModel implements  DevicesModelI{
     }
 
     @Override
-    public void notifySwitchObserver(int parent , int child,boolean ischecked) throws Exception{
+    public void notifySwitchObserver(int parent , int child,boolean ischecked) throws Exception {
         for (int i=0;i<deviceObservers.size();i++){
             deviceObservers.get(i).updateDeviceLightObserver(parent, child, ischecked);
         }
@@ -242,7 +151,6 @@ public class DevicesModel implements  DevicesModelI{
         }
 
     }
-
 
     public List<Device> getDevices() {
         return devices;
@@ -315,61 +223,5 @@ public class DevicesModel implements  DevicesModelI{
             }
         }
         return rep;
-    }
-
-
-
-    @Override
-    public DeviceConnector getConnector() {
-        return connector;
-    }
-
-
-    @Override
-    public void setupConnector(BluetoothDevice connectedDevice, Handler mHandler) {
-        stopConnection();
-        try {
-            connector = new DeviceConnector(connectedDevice, mHandler);
-            connector.connect();
-        } catch (IllegalArgumentException e) {
-            Log.d(TAG, "setupConnector failed: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void stopConnection() {
-        if (connector != null) {
-            connector.stop();
-            connector = null;
-        }
-    }
-
-    @Override
-    public boolean isConnected() {
-        return (connector != null) && (connector.getState() == DeviceConnector.STATE_CONNECTED);
-    }
-
-    public static BluetoothSocket createRfcommSocket(BluetoothDevice device) {
-        BluetoothSocket tmp = null;
-        try {
-            Class class1 = device.getClass();
-            Class aclass[] = new Class[1];
-            aclass[0] = Integer.TYPE;
-            Method method = class1.getMethod("createRfcommSocket", aclass);
-            Object aobj[] = new Object[1];
-            aobj[0] = Integer.valueOf(1);
-
-            tmp = (BluetoothSocket) method.invoke(device, aobj);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            if (D) Log.e(TAG, "createRfcommSocket() failed", e);
-        }
-        return tmp;
     }
 }
